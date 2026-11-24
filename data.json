@@ -1,5 +1,14 @@
 {
   "appTitle": "الأقسام الرئيسية",
   "appSubtitle": "اختر القسم للبدء",
-  "categories": []
+  "categories": [
+    {
+      "id": "thermophysics",
+      "folder": "thermophysics",
+      "title": "ThermoPhysics",
+      "description": "",
+      "icon": "📘",
+      "items": []
+    }
+  ]
 }
