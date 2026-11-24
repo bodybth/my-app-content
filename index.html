@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#2563eb" />
+  <title>Mol5sat</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --surface: #ffffff;
+      --surface-alt: #eef2f9;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-soft: rgba(37, 99, 235, 0.1);
+      --warning-bg: #fef3c7;
+      --warning-text: #92400e;
+      --shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+      --radius: 16px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #1e293b;
+      --surface-alt: #273549;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --primary: #3b82f6;
+      --primary-soft: rgba(59, 130, 246, 0.16);
+      --warning-bg: #451a03;
+      --warning-text: #fde68a;
+      --shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Tahoma, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      user-select: none;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .topbar-titles {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .topbar-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.15s ease;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.93);
+    }
+
+    .icon-btn.spinning {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .offline-banner {
+      display: none;
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .offline-banner.visible {
+      display: block;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .search-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 42px 12px 38px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      box-shadow: var(--shadow);
+      user-select: text;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .search-clear {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      border: none;
+      border-radius: 50%;
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-clear.visible {
+      display: flex;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 520px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.14s ease, border-color 0.15s ease;
+    }
+
+    .card:active {
+      transform: scale(0.98);
+      border-color: var(--primary);
+    }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 1.55rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-body {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 3px;
+      color: var(--text);
+    }
+
+    .card-desc {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-meta {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .card-arrow {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .state-box {
+      text-align: center;
+      padding: 48px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .state-emoji {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .state-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .state-text {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .btn-primary:active {
+      opacity: 0.9;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3.5px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      margin: 0 auto 14px;
+      animation: spin 0.75s linear infinite;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      z-index: 100;
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      pointer-events: none;
+      max-width: 90vw;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    [data-theme="dark"] .toast {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="offlineBanner" class="offline-banner">
+    وضع عدم الاتصال — يتم عرض آخر نسخة محفوظة من القوائم
+  </div>
+
+  <header class="topbar">
+    <div class="topbar-titles">
+      <div id="headerTitle" class="topbar-title" dir="auto">الأقسام الرئيسية</div>
+      <div id="headerSubtitle" class="topbar-subtitle" dir="auto">اختر القسم للمتابعة</div>
+    </div>
+    <div class="topbar-actions">
+      <button id="refreshBtn" class="icon-btn" aria-label="تحديث البيانات" title="تحديث">↻</button>
+      <button id="themeBtn" class="icon-btn" aria-label="تبديل المظهر" title="الوضع الداكن/الفاتح">🌙</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="searchWrap" class="search-wrap hidden">
+      <span class="search-icon">🔍</span>
+      <input id="searchInput" class="search-input" type="search" placeholder="ابحث عن قسم أو عنصر..." autocomplete="off" />
+      <button id="searchClear" class="search-clear" aria-label="مسح البحث">✕</button>
+    </div>
+
+    <div id="appContent"></div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const CONFIG = {
+      BASE_URL: "https://bodybth.github.io/my-app-content/",
+      DATA_URL: "https://bodybth.github.io/my-app-content/data.json",
+      DEFAULT_TITLE: "الأقسام الرئيسية",
+      DEFAULT_SUBTITLE: "اختر قسماً لعرض محتوياته"
+    };
+
+    const STORAGE_KEYS = {
+      DATA: "app_cached_data_v1",
+      THEME: "app_theme_preference_v1"
+    };
+
+    const state = {
+      data: null,
+      loading: true,
+      error: null,
+      selectedCategoryId: null,
+      searchQuery: ""
+    };
+
+    const el = {
+      offlineBanner: document.getElementById("offlineBanner"),
+      headerTitle: document.getElementById("headerTitle"),
+      headerSubtitle: document.getElementById("headerSubtitle"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      themeBtn: document.getElementById("themeBtn"),
+      searchWrap: document.getElementById("searchWrap"),
+      searchInput: document.getElementById("searchInput"),
+      searchClear: document.getElementById("searchClear"),
+      appContent: document.getElementById("appContent"),
+      toast: document.getElementById("toast")
+    };
+
+    let toastTimer = null;
+    let isFetching = false;
+
+    function safeStorageGet(key) {
+      try { return localStorage.getItem(key); } catch (e) { return null; }
+    }
+
+    function safeStorageSet(key, val) {
+      try { localStorage.setItem(key, val); } catch (e) {}
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function resolvePageUrl(rawUrl, bustCache) {
+      if (!rawUrl) return "";
+      let full = "";
+      if (/^https?:\/\//i.test(rawUrl)) {
+        full = rawUrl;
+      } else {
+        const base = CONFIG.BASE_URL.endsWith("/") ? CONFIG.BASE_URL : CONFIG.BASE_URL + "/";
+        const clean = rawUrl.startsWith("/") ? rawUrl.slice(1) : rawUrl;
+        full = base + clean;
+      }
+      if (bustCache) {
+        const sep = full.includes("?") ? "&" : "?";
+        full += sep + "v=" + Date.now();
+      }
+      return full;
+    }
+
+    function showToast(msg, duration) {
+      el.toast.textContent = msg;
+      el.toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        el.toast.classList.remove("show");
+      }, duration || 2400);
+    }
+
+    function updateNetworkStatus() {
+      if (!navigator.onLine) {
+        el.offlineBanner.classList.add("visible");
+      } else {
+        el.offlineBanner.classList.remove("visible");
+      }
+    }
+
+    function initTheme() {
+      const saved = safeStorageGet(STORAGE_KEYS.THEME);
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      applyTheme(saved || (prefersDark ? "dark" : "light"));
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      el.themeBtn.textContent = theme === "dark" ? "☀️" : "🌙";
+      safeStorageSet(STORAGE_KEYS.THEME, theme);
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme");
+      applyTheme(current === "dark" ? "light" : "dark");
+    }
+
+    function supportsQueryNavigation() {
+      const p = window.location.protocol;
+      return p === "http:" || p === "https:" || p === "file:";
+    }
+
+    function getBaseLocalUrl() {
+      return window.location.href.split("?")[0].split("#")[0];
+    }
+
+    function readCategoryFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const qCat = params.get("cat");
+        if (qCat) return qCat;
+      } catch (e) {}
+
+      const h = window.location.hash || "";
+      if (h.indexOf("#cat=") === 0) {
+        try { return decodeURIComponent(h.slice(5)); } catch (e) { return h.slice(5); }
+      }
+      return null;
+    }
+
+    function openCategory(categoryId) {
+      if (supportsQueryNavigation()) {
+        window.location.href = getBaseLocalUrl() + "?cat=" + encodeURIComponent(categoryId);
+      } else {
+        window.location.hash = "cat=" + encodeURIComponent(categoryId);
+        state.selectedCategoryId = categoryId;
+        clearSearch();
+        render();
+      }
+    }
+
+    function openItemPage(item) {
+      if (!item || !item.url) {
+        showToast("رابط الصفحة غير متوفر", 2400);
+        return;
+      }
+      if (!navigator.onLine) {
+        showToast("أنت غير متصل بالإنترنت حالياً", 2600);
+        return;
+      }
+      showToast("جاري فتح الصفحة...", 1500);
+      window.location.href = resolvePageUrl(item.url, true);
+    }
+
+    function loadCachedData() {
+      try {
+        const raw = safeStorageGet(STORAGE_KEYS.DATA);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.categories)) {
+          return parsed;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    async function fetchRemoteData(isManual) {
+      if (isFetching) return;
+      isFetching = true;
+      el.refreshBtn.classList.add("spinning");
+
+      if (!state.data) {
+        state.loading = true;
+        state.error = null;
+        render();
+      }
+
+      const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+      const timeoutId = controller ? setTimeout(function () { controller.abort(); }, 7000) : null;
+
+      try {
+        const sep = CONFIG.DATA_URL.includes("?") ? "&" : "?";
+        const url = CONFIG.DATA_URL + sep + "t=" + Date.now() + "&r=" + Math.random().toString(36).slice(2);
+        const options = controller ? { signal: controller.signal } : {};
+        const response = await fetch(url, options);
+
+        if (timeoutId) clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const freshData = await response.json();
+        if (!freshData || !Array.isArray(freshData.categories)) {
+          throw new Error("تنسيق ملف البيانات غير صحيح");
+        }
+
+        const prevSerialized = state.data ? JSON.stringify(state.data) : "";
+        const nextSerialized = JSON.stringify(freshData);
+        const hasChanged = prevSerialized !== nextSerialized;
+
+        safeStorageSet(STORAGE_KEYS.DATA, nextSerialized);
+        state.data = freshData;
+        state.loading = false;
+        state.error = null;
+
+        if (isManual) {
+          if (hasChanged) {
+            showToast("تم تحميل أحدث التعديلات بنجاح", 2600);
+          } else {
+            showToast("لا توجد تعديلات جديدة بعد (ينشر GitHub خلال دقيقة)", 3200);
+          }
+        } else if (prevSerialized && hasChanged) {
+          showToast("تم تحديث القوائم تلقائياً", 2600);
+        }
+
+        render();
+      } catch (err) {
+        if (timeoutId) clearTimeout(timeoutId);
+        state.loading = false;
+        if (!state.data) {
+          state.error = navigator.onLine
+            ? "تعذر تحميل البيانات من الخادم. تأكد من الاتصال وحاول مجدداً."
+            : "لا يوجد اتصال بالإنترنت ولا توجد بيانات محفوظة مسبقاً.";
+        } else if (isManual) {
+          showToast("تعذر الاتصال — يتم عرض النسخة المحفوظة", 2600);
+        }
+        render();
+      } finally {
+        isFetching = false;
+        el.refreshBtn.classList.remove("spinning");
+      }
+    }
+
+    function clearSearch() {
+      state.searchQuery = "";
+      el.searchInput.value = "";
+      el.searchClear.classList.remove("visible");
+    }
+
+    function getCategoryById(id) {
+      if (!state.data || !Array.isArray(state.data.categories)) return null;
+      return state.data.categories.find(function (c) { return c.id === id; }) || null;
+    }
+
+    function render() {
+      if (state.loading && !state.data) {
+        el.searchWrap.classList.add("hidden");
+        el.headerTitle.textContent = CONFIG.DEFAULT_TITLE;
+        el.headerSubtitle.textContent = "جاري التحميل...";
+        el.appContent.innerHTML =
+          '<div class="state-box">' +
+            '<div class="spinner"></div>' +
+            '<div class="state-title">جاري تحميل الأقسام...</div>' +
+            '<div class="state-text">يتم جلب أحدث البيانات</div>' +
+          '</div>';
+        return;
+      }
+
+      if (state.error && !state.data) {
+        el.searchWrap.classList.add("hidden");
+        el.headerTitle.textContent = CONFIG.DEFAULT_TITLE;
+        el.headerSubtitle.textContent = "تعذر الاتصال";
+        el.appContent.innerHTML =
+          '<div class="state-box">' +
+            '<div class="state-emoji">📡</div>' +
+            '<div class="state-title">تعذر تحميل المحتوى</div>' +
+            '<div class="state-text">' + escapeHtml(state.error) + '</div>' +
+            '<button class="btn-primary" onclick="fetchRemoteData(true)">إعادة المحاولة</button>' +
+          '</div>';
+        return;
+      }
+
+      if (state.selectedCategoryId) {
+        const cat = getCategoryById(state.selectedCategoryId);
+        if (cat) {
+          renderItemsView(cat);
+          return;
+        }
+      }
+
+      renderCategoriesView();
+    }
+
+    function renderCategoriesView() {
+      el.searchWrap.classList.remove("hidden");
+      el.searchInput.placeholder = "ابحث عن قسم أو عنصر...";
+      el.headerTitle.textContent = state.data.appTitle || CONFIG.DEFAULT_TITLE;
+      el.headerSubtitle.textContent = state.data.appSubtitle || CONFIG.DEFAULT_SUBTITLE;
+
+      const q = state.searchQuery.trim().toLowerCase();
+      const categories = state.data.categories || [];
+
+      const filtered = q
+        ? categories.filter(function (cat) {
+            const inCat =
+              (cat.title && cat.title.toLowerCase().includes(q)) ||
+              (cat.description && cat.description.toLowerCase().includes(q));
+            const inItems = (cat.items || []).some(function (it) {
+              return (
+                (it.title && it.title.toLowerCase().includes(q)) ||
+                (it.subtitle && it.subtitle.toLowerCase().includes(q)) ||
+                (it.tag && it.tag.toLowerCase().includes(q))
+              );
+            });
+            return inCat || inItems;
+          })
+        : categories;
+
+      if (filtered.length === 0) {
+        el.appContent.innerHTML =
+          '<div class="state-box">' +
+            '<div class="state-emoji">🗂️</div>' +
+            '<div class="state-title">لا توجد نتائج مطابقة</div>' +
+            '<div class="state-text">' + (q ? "جرّب البحث بكلمة أخرى" : "لم يتم إضافة أقسام بعد في ملف البيانات") + '</div>' +
+          '</div>';
+        return;
+      }
+
+      const cardsHtml = filtered
+        .map(function (cat) {
+          const count = Array.isArray(cat.items) ? cat.items.length : 0;
+          const descHtml = cat.description
+            ? '<div class="card-desc" dir="auto">' + escapeHtml(cat.description) + '</div>'
+            : "";
+          return (
+            '<article class="card" data-cat-id="' + escapeHtml(cat.id) + '">' +
+              '<div class="card-icon">' + escapeHtml(cat.icon || "📁") + '</div>' +
+              '<div class="card-body">' +
+                '<div class="card-title" dir="auto">' + escapeHtml(cat.title || "قسم بدون اسم") + '</div>' +
+                descHtml +
+                '<div class="card-meta">' +
+                  '<span class="badge">' + count + " " + (count === 1 ? "عنصر" : "عناصر") + '</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="card-arrow">‹</div>' +
+            '</article>'
+          );
+        })
+        .join("");
+
+      el.appContent.innerHTML = '<div class="cards-grid">' + cardsHtml + '</div>';
+
+      el.appContent.querySelectorAll(".card[data-cat-id]").forEach(function (card) {
+        card.addEventListener("click", function () {
+          openCategory(card.getAttribute("data-cat-id"));
+        });
+      });
+    }
+
+    function renderItemsView(cat) {
+      el.searchWrap.classList.remove("hidden");
+      el.searchInput.placeholder = "ابحث داخل هذا القسم...";
+      el.headerTitle.textContent = cat.title || "القائمة";
+      el.headerSubtitle.textContent = cat.description || "اختر عنصراً للفتح";
+
+      const q = state.searchQuery.trim().toLowerCase();
+      const items = cat.items || [];
+      const filtered = q
+        ? items.filter(function (it) {
+            return (
+              (it.title && it.title.toLowerCase().includes(q)) ||
+              (it.subtitle && it.subtitle.toLowerCase().includes(q)) ||
+              (it.tag && it.tag.toLowerCase().includes(q))
+            );
+          })
+        : items;
+
+      if (filtered.length === 0) {
+        el.appContent.innerHTML =
+          '<div class="state-box">' +
+            '<div class="state-emoji">📄</div>' +
+            '<div class="state-title">لا توجد عناصر</div>' +
+            '<div class="state-text">' + (q ? "لا توجد نتائج مطابقة لبحثك داخل هذا القسم" : "هذا القسم فارغ حالياً") + '</div>' +
+          '</div>';
+        return;
+      }
+
+      const itemsHtml = filtered
+        .map(function (item) {
+          const subHtml = item.subtitle
+            ? '<div class="card-desc" dir="auto">' + escapeHtml(item.subtitle) + '</div>'
+            : "";
+          const tagHtml = item.tag
+            ? '<div class="card-meta"><span class="badge">' + escapeHtml(item.tag) + '</span></div>'
+            : "";
+          return (
+            '<article class="card" data-item-id="' + escapeHtml(item.id) + '">' +
+              '<div class="card-icon">' + escapeHtml(item.icon || "📄") + '</div>' +
+              '<div class="card-body">' +
+                '<div class="card-title" dir="auto">' + escapeHtml(item.title || "عنصر بدون عنوان") + '</div>' +
+                subHtml +
+                tagHtml +
+              '</div>' +
+              '<div class="card-arrow">‹</div>' +
+            '</article>'
+          );
+        })
+        .join("");
+
+      el.appContent.innerHTML = '<div class="items-list">' + itemsHtml + '</div>';
+
+      el.appContent.querySelectorAll(".card[data-item-id]").forEach(function (card) {
+        card.addEventListener("click", function () {
+          const id = card.getAttribute("data-item-id");
+          const found = items.find(function (i) { return i.id === id; });
+          openItemPage(found);
+        });
+      });
+    }
+
+    el.themeBtn.addEventListener("click", toggleTheme);
+    el.refreshBtn.addEventListener("click", function () { fetchRemoteData(true); });
+
+    el.searchInput.addEventListener("input", function (e) {
+      state.searchQuery = e.target.value;
+      el.searchClear.classList.toggle("visible", state.searchQuery.length > 0);
+      render();
+    });
+
+    el.searchClear.addEventListener("click", function () {
+      clearSearch();
+      el.searchInput.focus();
+      render();
+    });
+
+    window.addEventListener("hashchange", function () {
+      state.selectedCategoryId = readCategoryFromUrl();
+      clearSearch();
+      render();
+    });
+
+    window.addEventListener("pageshow", function () {
+      state.selectedCategoryId = readCategoryFromUrl();
+      render();
+      if (navigator.onLine) {
+        fetchRemoteData(false);
+      }
+    });
+
+    window.addEventListener("online", function () {
+      updateNetworkStatus();
+      fetchRemoteData(false);
+    });
+    window.addEventListener("offline", updateNetworkStatus);
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible" && navigator.onLine) {
+        fetchRemoteData(false);
+      }
+    });
+
+    initTheme();
+    updateNetworkStatus();
+    state.selectedCategoryId = readCategoryFromUrl();
+
+    const cached = loadCachedData();
+    if (cached) {
+      state.data = cached;
+      state.loading = false;
+      render();
+    }
+    fetchRemoteData(false);
+  </script>
+</body>
+</html>
