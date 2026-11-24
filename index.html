@@ -7,7 +7,6 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-
   <title>Mol5sat</title>
   <style>
     :root {
@@ -182,7 +181,6 @@
       padding: 16px;
     }
 
-    /* Admin Action Bar (below topbar, above categories/items) */
     .admin-bar {
       display: flex;
       align-items: center;
@@ -223,7 +221,6 @@
       transform: scale(0.95);
     }
 
-    /* Search Bar */
     .search-wrap {
       position: relative;
       margin-bottom: 16px;
@@ -279,7 +276,6 @@
       display: flex;
     }
 
-    /* Cards Grid & List */
     .cards-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -469,7 +465,6 @@
       animation: spin 0.75s linear infinite;
     }
 
-    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -698,7 +693,6 @@
   </header>
 
   <main class="container">
-    <!-- Admin Bar with Contextual (+) Button -->
     <div id="adminBar" class="admin-bar hidden">
       <span id="adminBarLabel" class="admin-bar-label">Admin Mode Active</span>
       <button id="addContextBtn" class="add-plus-btn" type="button">+ Add Category</button>
@@ -713,7 +707,6 @@
     <div id="appContent"></div>
   </main>
 
-  <!-- Modal 1: Admin Login (Password + One-Time Token) -->
   <div id="loginModal" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card">
       <div class="modal-header">
@@ -746,7 +739,6 @@
     </div>
   </div>
 
-  <!-- Modal 2: Contextual Add Modal (Add Category OR Add Page) -->
   <div id="addModal" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card">
       <div class="modal-header">
@@ -759,7 +751,6 @@
 
       <div id="addError" class="error-msg hidden"></div>
 
-      <!-- Add Category Form -->
       <div id="addCatForm" class="hidden">
         <div class="field">
           <label class="field-label" for="newCatNameInput">Category Name (e.g. AI &amp; ML)</label>
@@ -776,7 +767,6 @@
         <button id="submitAddCatBtn" class="btn-primary" type="button">Create Category</button>
       </div>
 
-      <!-- Add File Form -->
       <div id="addFileForm" class="hidden">
         <div class="field">
           <label class="field-label" for="newFileNameInput">Page Display Name (e.g. ai &amp; ml)</label>
@@ -796,7 +786,6 @@
     </div>
   </div>
 
-  <!-- Modal 3: Manage Item / Category (Pencil Button) -->
   <div id="manageModal" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card">
       <div class="modal-header">
@@ -815,7 +804,6 @@
         <button id="tabDeleteBtn" class="tab-btn danger-tab" type="button">Delete</button>
       </div>
 
-      <!-- Rename Panel -->
       <div id="panelRename">
         <div class="field">
           <label class="field-label" for="renameInput">New Display Name</label>
@@ -824,7 +812,6 @@
         <button id="submitRenameBtn" class="btn-primary" type="button">Save Name</button>
       </div>
 
-      <!-- Update File Panel (Pages only) -->
       <div id="panelUpdate" class="hidden">
         <div class="field">
           <label class="field-label" for="updateFileInput">Choose Replacement HTML File</label>
@@ -838,7 +825,6 @@
         <button id="submitUpdateBtn" class="btn-primary" type="button">Update File on GitHub</button>
       </div>
 
-      <!-- Delete Panel (Password Confirmation Required) -->
       <div id="panelDelete" class="hidden">
         <div id="deleteWarningText" class="danger-box">
           This action is permanent and cannot be undone.
@@ -856,6 +842,7 @@
 
   <script>
     const CONFIG = {
+      APP_VERSION: "1.0",
       GITHUB_OWNER: "bodybth",
       GITHUB_REPO: "my-app-content",
       GITHUB_BRANCH: "main",
@@ -1088,7 +1075,10 @@
 
     function openCategory(categoryId) {
       if (supportsQueryNavigation()) {
-        window.location.href = getBaseLocalUrl() + "?cat=" + encodeURIComponent(categoryId);
+        window.location.href =
+          getBaseLocalUrl() +
+          "?cat=" + encodeURIComponent(categoryId) +
+          "&v=" + encodeURIComponent(CONFIG.APP_VERSION);
       } else {
         window.location.hash = "cat=" + encodeURIComponent(categoryId);
         state.selectedCategoryId = categoryId;
@@ -1151,6 +1141,21 @@
         const freshData = await response.json();
         if (!freshData || !Array.isArray(freshData.categories)) {
           throw new Error("Invalid data format");
+        }
+
+        /* Auto-reload index.html when appVersion in data.json changes */
+        if (freshData.appVersion && String(freshData.appVersion) !== String(CONFIG.APP_VERSION)) {
+          try {
+            const targetVer = String(freshData.appVersion);
+            const lastTried = sessionStorage.getItem("mol5sat_tried_ver");
+            if (lastTried !== targetVer && supportsQueryNavigation()) {
+              sessionStorage.setItem("mol5sat_tried_ver", targetVer);
+              const nextUrl = new URL(window.location.href);
+              nextUrl.searchParams.set("v", targetVer);
+              window.location.replace(nextUrl.toString());
+              return;
+            }
+          } catch (e) {}
         }
 
         const prevSerialized = state.data ? JSON.stringify(state.data) : "";
@@ -1416,9 +1421,6 @@
       });
     }
 
-    /* ==========================================
-       GitHub API Helpers
-    ========================================== */
     function ghApiUrl(path) {
       return (
         "https://api.github.com/repos/" +
@@ -1516,9 +1518,6 @@
       if (btn && label) btn.textContent = label;
     }
 
-    /* ==========================================
-       Modal 1: Admin Login / Switch to User
-    ========================================== */
     function openLoginModal() {
       setBoxError(el.loginError, "");
       el.loginPasswordInput.value = "";
@@ -1580,9 +1579,6 @@
       showToast("Admin Mode enabled", 2200);
     }
 
-    /* ==========================================
-       Modal 2: Contextual (+) Add Category / Add Page
-    ========================================== */
     function openAddModal() {
       setBoxError(el.addError, "");
       const activeCat = state.selectedCategoryId ? getCategoryById(state.selectedCategoryId) : null;
@@ -1641,7 +1637,12 @@
 
       try {
         const remoteDataFile = await ghGetFile("data.json", token);
-        let repoData = { appTitle: CONFIG.DEFAULT_TITLE, appSubtitle: CONFIG.DEFAULT_SUBTITLE, categories: [] };
+        let repoData = {
+          appVersion: CONFIG.APP_VERSION,
+          appTitle: CONFIG.DEFAULT_TITLE,
+          appSubtitle: CONFIG.DEFAULT_SUBTITLE,
+          categories: []
+        };
         let dataSha = null;
 
         if (remoteDataFile && remoteDataFile.content) {
@@ -1821,9 +1822,6 @@
       }
     }
 
-    /* ==========================================
-       Modal 3: Pencil Manage Modal (Rename / Update / Delete)
-    ========================================== */
     function switchManageTab(tab) {
       setBoxError(el.manageError, "");
       el.tabRenameBtn.classList.toggle("active", tab === "rename");
@@ -2000,7 +1998,6 @@
       setBoxError(el.manageError, "");
       if (!state.manageTarget) return;
 
-      /* Mandatory Password Confirmation for any Delete */
       if (el.deletePasswordInput.value !== CONFIG.ADMIN_PASSWORD) {
         setBoxError(el.manageError, "Incorrect password. Deletion cancelled.");
         return;
@@ -2032,7 +2029,6 @@
           const catTitle = cat.title || cat.id;
           const folder = inferCategoryFolder(cat);
 
-          /* Delete all files inside the category folder on GitHub */
           const dirListing = await ghGetFile("pages/" + folder, token);
           const deletedPaths = {};
           if (Array.isArray(dirListing)) {
@@ -2045,7 +2041,6 @@
             }
           }
 
-          /* Delete any remaining item files if located outside the folder */
           const catItems = cat.items || [];
           for (let j = 0; j < catItems.length; j++) {
             const url = catItems[j].url;
@@ -2110,15 +2105,11 @@
       }
     }
 
-    /* ==========================================
-       Event Listeners & Init
-    ========================================== */
     el.themeBtn.addEventListener("click", toggleTheme);
     el.refreshBtn.addEventListener("click", function () { fetchRemoteData(true); });
     el.modeBtn.addEventListener("click", handleModeToggle);
     el.addContextBtn.addEventListener("click", openAddModal);
 
-    /* Login modal events */
     el.closeLoginBtn.addEventListener("click", closeLoginModal);
     el.loginModal.addEventListener("click", function (e) {
       if (e.target === el.loginModal) closeLoginModal();
@@ -2133,7 +2124,6 @@
       if (e.key === "Enter") handleConfirmLogin();
     });
 
-    /* Add modal events */
     el.closeAddBtn.addEventListener("click", closeAddModal);
     el.addModal.addEventListener("click", function (e) {
       if (e.target === el.addModal) closeAddModal();
@@ -2141,7 +2131,6 @@
     el.submitAddCatBtn.addEventListener("click", handleAddCategory);
     el.submitAddFileBtn.addEventListener("click", handleAddFile);
 
-    /* Manage modal events */
     el.closeManageBtn.addEventListener("click", closeManageModal);
     el.manageModal.addEventListener("click", function (e) {
       if (e.target === el.manageModal) closeManageModal();
@@ -2153,7 +2142,6 @@
     el.submitUpdateBtn.addEventListener("click", handleUpdateItemFile);
     el.submitDeleteBtn.addEventListener("click", handleDelete);
 
-    /* Search events */
     el.searchInput.addEventListener("input", function (e) {
       state.searchQuery = e.target.value;
       el.searchClear.classList.toggle("visible", state.searchQuery.length > 0);
@@ -2193,7 +2181,6 @@
       }
     });
 
-    /* Boot */
     initTheme();
     updateNetworkStatus();
     state.selectedCategoryId = readCategoryFromUrl();
