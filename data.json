@@ -35,6 +35,14 @@
           "url": "pages/differntial/Laplace_&_Inverse_Laplace_Transform.html"
         }
       ]
+    },
+    {
+      "id": "mechanics-of-materials",
+      "folder": "mechanics-of-materials",
+      "title": "Mechanics of Materials",
+      "description": "",
+      "icon": "📘",
+      "items": []
     }
   ]
 }
