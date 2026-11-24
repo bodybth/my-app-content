@@ -18,6 +18,14 @@
           "url": "pages/thermophysics/Test_-_1.html"
         }
       ]
+    },
+    {
+      "id": "differntial",
+      "folder": "differntial",
+      "title": "Differntial",
+      "description": "",
+      "icon": "📘",
+      "items": []
     }
   ]
 }
