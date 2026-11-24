@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -15,6 +15,8 @@
       --border: #e2e8f0;
       --primary: #2563eb;
       --primary-soft: rgba(37, 99, 235, 0.1);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.1);
       --warning-bg: #fef3c7;
       --warning-text: #92400e;
       --shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
@@ -30,6 +32,8 @@
       --border: #334155;
       --primary: #3b82f6;
       --primary-soft: rgba(59, 130, 246, 0.16);
+      --danger: #f87171;
+      --danger-soft: rgba(248, 113, 113, 0.14);
       --warning-bg: #451a03;
       --warning-text: #fde68a;
       --shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
@@ -43,7 +47,7 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Tahoma, Arial, sans-serif;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.5;
@@ -95,6 +99,27 @@
       flex-shrink: 0;
     }
 
+    .create-btn {
+      height: 40px;
+      padding: 0 13px;
+      border-radius: 12px;
+      border: none;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.86rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: transform 0.12s ease, opacity 0.15s ease;
+    }
+
+    .create-btn:active {
+      transform: scale(0.95);
+    }
+
     .icon-btn {
       width: 40px;
       height: 40px;
@@ -102,7 +127,7 @@
       border: 1px solid var(--border);
       background: var(--surface-alt);
       color: var(--text);
-      font-size: 1.1rem;
+      font-size: 1.08rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -150,7 +175,7 @@
 
     .search-input {
       width: 100%;
-      padding: 12px 42px 12px 38px;
+      padding: 12px 38px 12px 42px;
       border-radius: 14px;
       border: 1px solid var(--border);
       background: var(--surface);
@@ -168,7 +193,7 @@
 
     .search-icon {
       position: absolute;
-      right: 14px;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
@@ -178,7 +203,7 @@
 
     .search-clear {
       position: absolute;
-      left: 10px;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
       width: 26px;
@@ -187,7 +212,7 @@
       border-radius: 50%;
       background: var(--surface-alt);
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       cursor: pointer;
       display: none;
       align-items: center;
@@ -282,7 +307,7 @@
 
     .card-arrow {
       color: var(--text-muted);
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       flex-shrink: 0;
     }
 
@@ -323,15 +348,29 @@
       color: #ffffff;
       border: none;
       border-radius: 12px;
-      padding: 10px 20px;
+      padding: 11px 18px;
       font-size: 0.92rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 0.88rem;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-    }
-
-    .btn-primary:active {
-      opacity: 0.9;
     }
 
     .spinner {
@@ -342,6 +381,160 @@
       border-radius: 50%;
       margin: 0 auto 14px;
       animation: spin 0.75s linear infinite;
+    }
+
+    /* Modal Styles */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    @media (min-width: 520px) {
+      .modal-backdrop {
+        align-items: center;
+      }
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 480px;
+      max-height: 88vh;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+      user-select: text;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: var(--surface-alt);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      padding: 9px;
+      border: none;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: var(--shadow);
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.92rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .textarea {
+      min-height: 90px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.82rem;
+    }
+
+    .helper-text {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .error-msg {
+      background: var(--danger-soft);
+      color: var(--danger);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 9px 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .token-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--surface-alt);
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      font-size: 0.8rem;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.8rem;
+      font-family: inherit;
+      cursor: pointer;
     }
 
     .toast {
@@ -382,43 +575,135 @@
 <body>
 
   <div id="offlineBanner" class="offline-banner">
-    وضع عدم الاتصال — يتم عرض آخر نسخة محفوظة من القوائم
+    Offline mode — showing cached content
   </div>
 
   <header class="topbar">
     <div class="topbar-titles">
-      <div id="headerTitle" class="topbar-title" dir="auto">الأقسام الرئيسية</div>
-      <div id="headerSubtitle" class="topbar-subtitle" dir="auto">اختر القسم للمتابعة</div>
+      <div id="headerTitle" class="topbar-title" dir="auto">Mol5sat</div>
+      <div id="headerSubtitle" class="topbar-subtitle" dir="auto">Select a category to browse</div>
     </div>
     <div class="topbar-actions">
-      <button id="refreshBtn" class="icon-btn" aria-label="تحديث البيانات" title="تحديث">↻</button>
-      <button id="themeBtn" class="icon-btn" aria-label="تبديل المظهر" title="الوضع الداكن/الفاتح">🌙</button>
+      <button id="createBtn" class="create-btn" aria-label="Create">+ Create</button>
+      <button id="refreshBtn" class="icon-btn" aria-label="Refresh" title="Refresh">↻</button>
+      <button id="themeBtn" class="icon-btn" aria-label="Toggle Theme" title="Toggle Theme">🌙</button>
     </div>
   </header>
 
   <main class="container">
     <div id="searchWrap" class="search-wrap hidden">
       <span class="search-icon">🔍</span>
-      <input id="searchInput" class="search-input" type="search" placeholder="ابحث عن قسم أو عنصر..." autocomplete="off" />
-      <button id="searchClear" class="search-clear" aria-label="مسح البحث">✕</button>
+      <input id="searchInput" class="search-input" type="search" placeholder="Search categories or items..." autocomplete="off" />
+      <button id="searchClear" class="search-clear" aria-label="Clear search">✕</button>
     </div>
 
     <div id="appContent"></div>
   </main>
 
+  <!-- Create Modal (Password + GitHub Upload) -->
+  <div id="createModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div id="modalTitle" class="modal-title">Admin Access</div>
+        <button id="closeModalBtn" class="icon-btn" style="width:34px;height:34px;font-size:0.95rem;" aria-label="Close">✕</button>
+      </div>
+
+      <div id="modalError" class="error-msg hidden"></div>
+
+      <!-- Step 1: Password Gate -->
+      <div id="authStep">
+        <div class="field">
+          <label class="field-label" for="passwordInput">Admin Password</label>
+          <input id="passwordInput" class="input" type="password" placeholder="Enter password" autocomplete="off" />
+        </div>
+        <button id="unlockBtn" class="btn-primary">Unlock</button>
+      </div>
+
+      <!-- Step 2: Create Panel -->
+      <div id="createStep" class="hidden">
+        <!-- GitHub Token Setup (Saved once per device) -->
+        <div id="tokenSavedRow" class="token-row hidden">
+          <span>🔑 GitHub Token: <strong>Saved on this device</strong></span>
+          <button id="changeTokenBtn" class="link-btn" type="button">Change</button>
+        </div>
+        <div id="tokenInputWrap" class="field">
+          <label class="field-label" for="ghTokenInput">GitHub Fine-Grained Token (Repo Contents Write)</label>
+          <input id="ghTokenInput" class="input" type="password" placeholder="github_pat_..." autocomplete="off" />
+          <div class="helper-text">Saved locally on this device only. Required once to commit directly to GitHub.</div>
+        </div>
+
+        <div class="tabs">
+          <button id="tabFileBtn" class="tab-btn active" type="button">Upload File</button>
+          <button id="tabCatBtn" class="tab-btn" type="button">New Category</button>
+        </div>
+
+        <!-- Tab 1: Upload HTML File -->
+        <div id="fileForm">
+          <div class="field">
+            <label class="field-label" for="fileCatSelect">Category</label>
+            <select id="fileCatSelect" class="select"></select>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="fileNameInput">Display Name (e.g. ai &amp; ml)</label>
+            <input id="fileNameInput" class="input" type="text" placeholder="Enter title as it should appear" />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="htmlFileInput">Choose HTML File</label>
+            <input id="htmlFileInput" class="input" type="file" accept=".html,.htm,text/html" />
+            <div class="helper-text">Or paste HTML code directly below if you do not want to pick a file.</div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="htmlPasteInput">HTML Code (Optional Fallback)</label>
+            <textarea id="htmlPasteInput" class="textarea" placeholder="<!DOCTYPE html>..."></textarea>
+          </div>
+
+          <button id="submitFileBtn" class="btn-primary" type="button">Upload File to GitHub</button>
+        </div>
+
+        <!-- Tab 2: Add Category -->
+        <div id="catForm" class="hidden">
+          <div class="field">
+            <label class="field-label" for="catNameInput">Category Name (e.g. AI &amp; ML)</label>
+            <input id="catNameInput" class="input" type="text" placeholder="Enter category name" />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="catDescInput">Description (Optional)</label>
+            <input id="catDescInput" class="input" type="text" placeholder="Short description" />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="catIconInput">Icon / Emoji (Optional)</label>
+            <input id="catIconInput" class="input" type="text" value="📘" maxlength="4" />
+          </div>
+
+          <button id="submitCatBtn" class="btn-primary" type="button">Create Category</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 
   <script>
     const CONFIG = {
+      GITHUB_OWNER: "bodybth",
+      GITHUB_REPO: "my-app-content",
+      GITHUB_BRANCH: "main",
       BASE_URL: "https://bodybth.github.io/my-app-content/",
       DATA_URL: "https://bodybth.github.io/my-app-content/data.json",
-      DEFAULT_TITLE: "الأقسام الرئيسية",
-      DEFAULT_SUBTITLE: "اختر قسماً لعرض محتوياته"
+      ADMIN_PASSWORD: "ae2007",
+      DEFAULT_TITLE: "Mol5sat",
+      DEFAULT_SUBTITLE: "Select a category to browse"
     };
 
     const STORAGE_KEYS = {
       DATA: "app_cached_data_v1",
-      THEME: "app_theme_preference_v1"
+      THEME: "app_theme_preference_v1",
+      GH_TOKEN: "app_github_pat_v1"
     };
 
     const state = {
@@ -426,19 +711,48 @@
       loading: true,
       error: null,
       selectedCategoryId: null,
-      searchQuery: ""
+      searchQuery: "",
+      unlocked: false,
+      activeTab: "file",
+      isBusy: false
     };
 
     const el = {
       offlineBanner: document.getElementById("offlineBanner"),
       headerTitle: document.getElementById("headerTitle"),
       headerSubtitle: document.getElementById("headerSubtitle"),
+      createBtn: document.getElementById("createBtn"),
       refreshBtn: document.getElementById("refreshBtn"),
       themeBtn: document.getElementById("themeBtn"),
       searchWrap: document.getElementById("searchWrap"),
       searchInput: document.getElementById("searchInput"),
       searchClear: document.getElementById("searchClear"),
       appContent: document.getElementById("appContent"),
+      createModal: document.getElementById("createModal"),
+      modalTitle: document.getElementById("modalTitle"),
+      closeModalBtn: document.getElementById("closeModalBtn"),
+      modalError: document.getElementById("modalError"),
+      authStep: document.getElementById("authStep"),
+      passwordInput: document.getElementById("passwordInput"),
+      unlockBtn: document.getElementById("unlockBtn"),
+      createStep: document.getElementById("createStep"),
+      tokenSavedRow: document.getElementById("tokenSavedRow"),
+      changeTokenBtn: document.getElementById("changeTokenBtn"),
+      tokenInputWrap: document.getElementById("tokenInputWrap"),
+      ghTokenInput: document.getElementById("ghTokenInput"),
+      tabFileBtn: document.getElementById("tabFileBtn"),
+      tabCatBtn: document.getElementById("tabCatBtn"),
+      fileForm: document.getElementById("fileForm"),
+      catForm: document.getElementById("catForm"),
+      fileCatSelect: document.getElementById("fileCatSelect"),
+      fileNameInput: document.getElementById("fileNameInput"),
+      htmlFileInput: document.getElementById("htmlFileInput"),
+      htmlPasteInput: document.getElementById("htmlPasteInput"),
+      submitFileBtn: document.getElementById("submitFileBtn"),
+      catNameInput: document.getElementById("catNameInput"),
+      catDescInput: document.getElementById("catDescInput"),
+      catIconInput: document.getElementById("catIconInput"),
+      submitCatBtn: document.getElementById("submitCatBtn"),
       toast: document.getElementById("toast")
     };
 
@@ -461,6 +775,49 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
+    }
+
+    function utf8ToBase64(str) {
+      const bytes = new TextEncoder().encode(str);
+      let binary = "";
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+      }
+      return btoa(binary);
+    }
+
+    function base64ToUtf8(b64) {
+      const binary = atob(b64.replace(/\s/g, ""));
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new TextDecoder().decode(bytes);
+    }
+
+    function normalizeDisplayName(raw) {
+      let name = (raw || "").trim();
+      if (name.toLowerCase().endsWith(".html")) {
+        name = name.slice(0, -5).trim();
+      }
+      return name;
+    }
+
+    function extractAsciiSlug(name) {
+      let clean = (name || "").trim().toLowerCase();
+      if (clean.endsWith(".html")) clean = clean.slice(0, -5);
+      return clean.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    }
+
+    function inferCategoryFolder(cat) {
+      if (cat && cat.folder) return cat.folder;
+      const items = (cat && cat.items) || [];
+      for (let i = 0; i < items.length; i++) {
+        const parts = (items[i].url || "").replace(/^\/+/, "").split("/");
+        if (parts.length >= 3 && parts[0] === "pages") return parts[1];
+      }
+      return extractAsciiSlug((cat && (cat.id || cat.title)) || "general") || "general";
     }
 
     function resolvePageUrl(rawUrl, bustCache) {
@@ -486,7 +843,7 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(function () {
         el.toast.classList.remove("show");
-      }, duration || 2400);
+      }, duration || 2600);
     }
 
     function updateNetworkStatus() {
@@ -550,14 +907,14 @@
 
     function openItemPage(item) {
       if (!item || !item.url) {
-        showToast("رابط الصفحة غير متوفر", 2400);
+        showToast("Page URL is missing", 2400);
         return;
       }
       if (!navigator.onLine) {
-        showToast("أنت غير متصل بالإنترنت حالياً", 2600);
+        showToast("You are currently offline", 2600);
         return;
       }
-      showToast("جاري فتح الصفحة...", 1500);
+      showToast("Opening page...", 1500);
       window.location.href = resolvePageUrl(item.url, true);
     }
 
@@ -601,7 +958,7 @@
 
         const freshData = await response.json();
         if (!freshData || !Array.isArray(freshData.categories)) {
-          throw new Error("تنسيق ملف البيانات غير صحيح");
+          throw new Error("Invalid data format");
         }
 
         const prevSerialized = state.data ? JSON.stringify(state.data) : "";
@@ -615,12 +972,12 @@
 
         if (isManual) {
           if (hasChanged) {
-            showToast("تم تحميل أحدث التعديلات بنجاح", 2600);
+            showToast("Content updated", 2400);
           } else {
-            showToast("لا توجد تعديلات جديدة بعد (ينشر GitHub خلال دقيقة)", 3200);
+            showToast("Already up to date (GitHub deploys in ~1 min)", 3000);
           }
         } else if (prevSerialized && hasChanged) {
-          showToast("تم تحديث القوائم تلقائياً", 2600);
+          showToast("Content updated automatically", 2400);
         }
 
         render();
@@ -629,10 +986,10 @@
         state.loading = false;
         if (!state.data) {
           state.error = navigator.onLine
-            ? "تعذر تحميل البيانات من الخادم. تأكد من الاتصال وحاول مجدداً."
-            : "لا يوجد اتصال بالإنترنت ولا توجد بيانات محفوظة مسبقاً.";
+            ? "Failed to load content from server. Please check your connection."
+            : "No internet connection and no cached data available.";
         } else if (isManual) {
-          showToast("تعذر الاتصال — يتم عرض النسخة المحفوظة", 2600);
+          showToast("Could not refresh — showing cached data", 2600);
         }
         render();
       } finally {
@@ -656,12 +1013,12 @@
       if (state.loading && !state.data) {
         el.searchWrap.classList.add("hidden");
         el.headerTitle.textContent = CONFIG.DEFAULT_TITLE;
-        el.headerSubtitle.textContent = "جاري التحميل...";
+        el.headerSubtitle.textContent = "Loading...";
         el.appContent.innerHTML =
           '<div class="state-box">' +
             '<div class="spinner"></div>' +
-            '<div class="state-title">جاري تحميل الأقسام...</div>' +
-            '<div class="state-text">يتم جلب أحدث البيانات</div>' +
+            '<div class="state-title">Loading categories...</div>' +
+            '<div class="state-text">Fetching the latest content</div>' +
           '</div>';
         return;
       }
@@ -669,13 +1026,13 @@
       if (state.error && !state.data) {
         el.searchWrap.classList.add("hidden");
         el.headerTitle.textContent = CONFIG.DEFAULT_TITLE;
-        el.headerSubtitle.textContent = "تعذر الاتصال";
+        el.headerSubtitle.textContent = "Connection error";
         el.appContent.innerHTML =
           '<div class="state-box">' +
             '<div class="state-emoji">📡</div>' +
-            '<div class="state-title">تعذر تحميل المحتوى</div>' +
+            '<div class="state-title">Unable to Load Content</div>' +
             '<div class="state-text">' + escapeHtml(state.error) + '</div>' +
-            '<button class="btn-primary" onclick="fetchRemoteData(true)">إعادة المحاولة</button>' +
+            '<button class="btn-primary" style="width:auto;" onclick="fetchRemoteData(true)">Retry</button>' +
           '</div>';
         return;
       }
@@ -693,9 +1050,9 @@
 
     function renderCategoriesView() {
       el.searchWrap.classList.remove("hidden");
-      el.searchInput.placeholder = "ابحث عن قسم أو عنصر...";
-      el.headerTitle.textContent = state.data.appTitle || CONFIG.DEFAULT_TITLE;
-      el.headerSubtitle.textContent = state.data.appSubtitle || CONFIG.DEFAULT_SUBTITLE;
+      el.searchInput.placeholder = "Search categories or items...";
+      el.headerTitle.textContent = CONFIG.DEFAULT_TITLE;
+      el.headerSubtitle.textContent = CONFIG.DEFAULT_SUBTITLE;
 
       const q = state.searchQuery.trim().toLowerCase();
       const categories = state.data.categories || [];
@@ -720,8 +1077,8 @@
         el.appContent.innerHTML =
           '<div class="state-box">' +
             '<div class="state-emoji">🗂️</div>' +
-            '<div class="state-title">لا توجد نتائج مطابقة</div>' +
-            '<div class="state-text">' + (q ? "جرّب البحث بكلمة أخرى" : "لم يتم إضافة أقسام بعد في ملف البيانات") + '</div>' +
+            '<div class="state-title">No Matching Results</div>' +
+            '<div class="state-text">' + (q ? "Try a different search keyword" : "No categories added yet. Tap + Create to add one.") + '</div>' +
           '</div>';
         return;
       }
@@ -736,13 +1093,13 @@
             '<article class="card" data-cat-id="' + escapeHtml(cat.id) + '">' +
               '<div class="card-icon">' + escapeHtml(cat.icon || "📁") + '</div>' +
               '<div class="card-body">' +
-                '<div class="card-title" dir="auto">' + escapeHtml(cat.title || "قسم بدون اسم") + '</div>' +
+                '<div class="card-title" dir="auto">' + escapeHtml(cat.title || "Untitled Category") + '</div>' +
                 descHtml +
                 '<div class="card-meta">' +
-                  '<span class="badge">' + count + " " + (count === 1 ? "عنصر" : "عناصر") + '</span>' +
+                  '<span class="badge">' + count + " " + (count === 1 ? "item" : "items") + '</span>' +
                 '</div>' +
               '</div>' +
-              '<div class="card-arrow">‹</div>' +
+              '<div class="card-arrow">›</div>' +
             '</article>'
           );
         })
@@ -759,9 +1116,9 @@
 
     function renderItemsView(cat) {
       el.searchWrap.classList.remove("hidden");
-      el.searchInput.placeholder = "ابحث داخل هذا القسم...";
-      el.headerTitle.textContent = cat.title || "القائمة";
-      el.headerSubtitle.textContent = cat.description || "اختر عنصراً للفتح";
+      el.searchInput.placeholder = "Search inside this category...";
+      el.headerTitle.textContent = cat.title || "Items";
+      el.headerSubtitle.textContent = cat.description || "Select an item to open";
 
       const q = state.searchQuery.trim().toLowerCase();
       const items = cat.items || [];
@@ -779,8 +1136,8 @@
         el.appContent.innerHTML =
           '<div class="state-box">' +
             '<div class="state-emoji">📄</div>' +
-            '<div class="state-title">لا توجد عناصر</div>' +
-            '<div class="state-text">' + (q ? "لا توجد نتائج مطابقة لبحثك داخل هذا القسم" : "هذا القسم فارغ حالياً") + '</div>' +
+            '<div class="state-title">No Items Found</div>' +
+            '<div class="state-text">' + (q ? "No items match your search" : "This category is empty. Tap + Create to upload a file.") + '</div>' +
           '</div>';
         return;
       }
@@ -797,11 +1154,11 @@
             '<article class="card" data-item-id="' + escapeHtml(item.id) + '">' +
               '<div class="card-icon">' + escapeHtml(item.icon || "📄") + '</div>' +
               '<div class="card-body">' +
-                '<div class="card-title" dir="auto">' + escapeHtml(item.title || "عنصر بدون عنوان") + '</div>' +
+                '<div class="card-title" dir="auto">' + escapeHtml(item.title || "Untitled Item") + '</div>' +
                 subHtml +
                 tagHtml +
               '</div>' +
-              '<div class="card-arrow">‹</div>' +
+              '<div class="card-arrow">›</div>' +
             '</article>'
           );
         })
@@ -818,8 +1175,419 @@
       });
     }
 
+    /* ==========================================
+       GitHub API Helpers (Create Category / Upload File)
+    ========================================== */
+    function ghApiUrl(path) {
+      return (
+        "https://api.github.com/repos/" +
+        CONFIG.GITHUB_OWNER + "/" +
+        CONFIG.GITHUB_REPO + "/contents/" +
+        path
+      );
+    }
+
+    async function ghGetFile(path, token) {
+      const res = await fetch(ghApiUrl(path) + "?ref=" + encodeURIComponent(CONFIG.GITHUB_BRANCH) + "&t=" + Date.now(), {
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github+json"
+        }
+      });
+      if (res.status === 404) return null;
+      if (!res.ok) {
+        const errData = await res.json().catch(function () { return {}; });
+        throw new Error(errData.message || "GitHub API error (" + res.status + ")");
+      }
+      return await res.json();
+    }
+
+    async function ghPutFile(path, contentStr, commitMsg, token, existingSha) {
+      const body = {
+        message: commitMsg,
+        content: utf8ToBase64(contentStr),
+        branch: CONFIG.GITHUB_BRANCH
+      };
+      if (existingSha) {
+        body.sha = existingSha;
+      }
+
+      const res = await fetch(ghApiUrl(path), {
+        method: "PUT",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(function () { return {}; });
+        throw new Error(errData.message || "GitHub upload failed (" + res.status + ")");
+      }
+      return await res.json();
+    }
+
+    /* ==========================================
+       Create Modal Logic
+    ========================================== */
+    function showModalError(msg) {
+      if (!msg) {
+        el.modalError.classList.add("hidden");
+        el.modalError.textContent = "";
+      } else {
+        el.modalError.textContent = msg;
+        el.modalError.classList.remove("hidden");
+      }
+    }
+
+    function syncTokenUI() {
+      const savedToken = safeStorageGet(STORAGE_KEYS.GH_TOKEN);
+      if (savedToken) {
+        el.tokenSavedRow.classList.remove("hidden");
+        el.tokenInputWrap.classList.add("hidden");
+      } else {
+        el.tokenSavedRow.classList.add("hidden");
+        el.tokenInputWrap.classList.remove("hidden");
+      }
+    }
+
+    function populateCategorySelect() {
+      const categories = (state.data && state.data.categories) || [];
+      el.fileCatSelect.innerHTML = "";
+      if (categories.length === 0) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "No categories yet — create one first";
+        el.fileCatSelect.appendChild(opt);
+        return;
+      }
+      categories.forEach(function (cat) {
+        const opt = document.createElement("option");
+        opt.value = cat.id;
+        opt.textContent = cat.title || cat.id;
+        if (state.selectedCategoryId && cat.id === state.selectedCategoryId) {
+          opt.selected = true;
+        }
+        el.fileCatSelect.appendChild(opt);
+      });
+    }
+
+    function switchModalTab(tab) {
+      state.activeTab = tab;
+      showModalError("");
+      if (tab === "file") {
+        el.tabFileBtn.classList.add("active");
+        el.tabCatBtn.classList.remove("active");
+        el.fileForm.classList.remove("hidden");
+        el.catForm.classList.add("hidden");
+        populateCategorySelect();
+      } else {
+        el.tabCatBtn.classList.add("active");
+        el.tabFileBtn.classList.remove("active");
+        el.catForm.classList.remove("hidden");
+        el.fileForm.classList.add("hidden");
+      }
+    }
+
+    function openCreateModal() {
+      showModalError("");
+      el.createModal.classList.add("open");
+      el.createModal.setAttribute("aria-hidden", "false");
+
+      if (state.unlocked) {
+        el.modalTitle.textContent = "Create Content";
+        el.authStep.classList.add("hidden");
+        el.createStep.classList.remove("hidden");
+        syncTokenUI();
+        populateCategorySelect();
+      } else {
+        el.modalTitle.textContent = "Admin Access";
+        el.authStep.classList.remove("hidden");
+        el.createStep.classList.add("hidden");
+        el.passwordInput.value = "";
+        setTimeout(function () { el.passwordInput.focus(); }, 60);
+      }
+    }
+
+    function closeCreateModal() {
+      if (state.isBusy) return;
+      el.createModal.classList.remove("open");
+      el.createModal.setAttribute("aria-hidden", "true");
+      showModalError("");
+    }
+
+    function getActiveToken() {
+      const typed = el.ghTokenInput.value.trim();
+      if (typed) {
+        safeStorageSet(STORAGE_KEYS.GH_TOKEN, typed);
+        syncTokenUI();
+        return typed;
+      }
+      return safeStorageGet(STORAGE_KEYS.GH_TOKEN) || "";
+    }
+
+    function setBusy(busy, btn, label) {
+      state.isBusy = busy;
+      el.submitFileBtn.disabled = busy;
+      el.submitCatBtn.disabled = busy;
+      if (btn && label) btn.textContent = label;
+    }
+
+    async function handleCreateCategory() {
+      showModalError("");
+      if (!navigator.onLine) {
+        showModalError("You must be online to create a category.");
+        return;
+      }
+
+      const token = getActiveToken();
+      if (!token) {
+        showModalError("Please enter your GitHub Fine-Grained Token first.");
+        return;
+      }
+
+      const displayTitle = normalizeDisplayName(el.catNameInput.value);
+      if (!displayTitle) {
+        showModalError("Category name cannot be empty.");
+        return;
+      }
+
+      const description = el.catDescInput.value.trim();
+      const icon = el.catIconInput.value.trim() || "📘";
+
+      setBusy(true, el.submitCatBtn, "Creating...");
+
+      try {
+        const remoteDataFile = await ghGetFile("data.json", token);
+        let repoData = { appTitle: CONFIG.DEFAULT_TITLE, appSubtitle: CONFIG.DEFAULT_SUBTITLE, categories: [] };
+        let dataSha = null;
+
+        if (remoteDataFile && remoteDataFile.content) {
+          dataSha = remoteDataFile.sha;
+          repoData = JSON.parse(base64ToUtf8(remoteDataFile.content));
+          if (!Array.isArray(repoData.categories)) repoData.categories = [];
+        }
+
+        const existingFolders = {};
+        repoData.categories.forEach(function (c) {
+          existingFolders[inferCategoryFolder(c)] = true;
+        });
+
+        const baseSlug = extractAsciiSlug(displayTitle) || ("cat-" + Date.now());
+        let folderSlug = baseSlug;
+        let counter = 2;
+        while (existingFolders[folderSlug]) {
+          folderSlug = baseSlug + "-" + counter;
+          counter++;
+        }
+
+        await ghPutFile(
+          "pages/" + folderSlug + "/.gitkeep",
+          "",
+          "Create folder for category '" + displayTitle + "'",
+          token,
+          null
+        );
+
+        repoData.categories.push({
+          id: folderSlug,
+          folder: folderSlug,
+          title: displayTitle,
+          description: description,
+          icon: icon,
+          items: []
+        });
+
+        await ghPutFile(
+          "data.json",
+          JSON.stringify(repoData, null, 2),
+          "Add category '" + displayTitle + "'",
+          token,
+          dataSha
+        );
+
+        state.data = repoData;
+        safeStorageSet(STORAGE_KEYS.DATA, JSON.stringify(repoData));
+        el.catNameInput.value = "";
+        el.catDescInput.value = "";
+        render();
+
+        setBusy(false, el.submitCatBtn, "Create Category");
+        closeCreateModal();
+        showToast("Category created and synced to GitHub!", 3200);
+      } catch (err) {
+        setBusy(false, el.submitCatBtn, "Create Category");
+        showModalError("Error: " + (err.message || "Failed to create category."));
+      }
+    }
+
+    async function handleUploadFile() {
+      showModalError("");
+      if (!navigator.onLine) {
+        showModalError("You must be online to upload a file.");
+        return;
+      }
+
+      const token = getActiveToken();
+      if (!token) {
+        showModalError("Please enter your GitHub Fine-Grained Token first.");
+        return;
+      }
+
+      const catId = el.fileCatSelect.value;
+      if (!catId) {
+        showModalError("Please select a category (or create one first).");
+        return;
+      }
+
+      const displayTitle = normalizeDisplayName(el.fileNameInput.value);
+      if (!displayTitle) {
+        showModalError("Please enter a display name for the file.");
+        return;
+      }
+
+      const pickedFile = el.htmlFileInput.files && el.htmlFileInput.files[0];
+      const pastedHtml = el.htmlPasteInput.value;
+      let htmlContent = "";
+
+      if (pickedFile) {
+        htmlContent = await pickedFile.text();
+      } else if (pastedHtml && pastedHtml.trim()) {
+        htmlContent = pastedHtml;
+      } else {
+        showModalError("Please select an HTML file or paste HTML code.");
+        return;
+      }
+
+      setBusy(true, el.submitFileBtn, "Uploading...");
+
+      try {
+        const remoteDataFile = await ghGetFile("data.json", token);
+        if (!remoteDataFile || !remoteDataFile.content) {
+          throw new Error("data.json not found on GitHub");
+        }
+
+        const dataSha = remoteDataFile.sha;
+        const repoData = JSON.parse(base64ToUtf8(remoteDataFile.content));
+        const targetCat = (repoData.categories || []).find(function (c) { return c.id === catId; });
+        if (!targetCat) {
+          throw new Error("Selected category no longer exists");
+        }
+        if (!Array.isArray(targetCat.items)) targetCat.items = [];
+
+        const catFolder = inferCategoryFolder(targetCat);
+        const existingItem = targetCat.items.find(function (it) {
+          return (it.title || "").trim().toLowerCase() === displayTitle.toLowerCase();
+        });
+
+        let relUrl = "";
+        if (existingItem && existingItem.url) {
+          relUrl = existingItem.url;
+        } else {
+          const existingUrls = {};
+          targetCat.items.forEach(function (it) {
+            if (it.url) existingUrls[it.url] = true;
+          });
+          const baseSlug = extractAsciiSlug(displayTitle) || ("page-" + Date.now());
+          let filename = baseSlug + ".html";
+          let counter = 2;
+          while (existingUrls["pages/" + catFolder + "/" + filename]) {
+            filename = baseSlug + "-" + counter + ".html";
+            counter++;
+          }
+          relUrl = "pages/" + catFolder + "/" + filename;
+        }
+
+        const existingPage = await ghGetFile(relUrl, token);
+        const pageSha = existingPage ? existingPage.sha : null;
+
+        await ghPutFile(
+          relUrl,
+          htmlContent,
+          (existingItem ? "Update file '" : "Add file '") + displayTitle + "' in '" + targetCat.title + "'",
+          token,
+          pageSha
+        );
+
+        if (existingItem) {
+          existingItem.title = displayTitle;
+        } else {
+          targetCat.items.push({
+            id: "item-" + Date.now(),
+            title: displayTitle,
+            subtitle: "",
+            tag: "",
+            icon: "📄",
+            url: relUrl
+          });
+        }
+
+        await ghPutFile(
+          "data.json",
+          JSON.stringify(repoData, null, 2),
+          "Update data.json for '" + displayTitle + "'",
+          token,
+          dataSha
+        );
+
+        state.data = repoData;
+        safeStorageSet(STORAGE_KEYS.DATA, JSON.stringify(repoData));
+        el.fileNameInput.value = "";
+        el.htmlFileInput.value = "";
+        el.htmlPasteInput.value = "";
+        render();
+
+        setBusy(false, el.submitFileBtn, "Upload File to GitHub");
+        closeCreateModal();
+        showToast("Uploaded! Page will be live on GitHub Pages in ~1 min.", 3800);
+      } catch (err) {
+        setBusy(false, el.submitFileBtn, "Upload File to GitHub");
+        showModalError("Error: " + (err.message || "Failed to upload file."));
+      }
+    }
+
+    /* ==========================================
+       Event Bindings & Init
+    ========================================== */
     el.themeBtn.addEventListener("click", toggleTheme);
     el.refreshBtn.addEventListener("click", function () { fetchRemoteData(true); });
+    el.createBtn.addEventListener("click", openCreateModal);
+    el.closeModalBtn.addEventListener("click", closeCreateModal);
+    el.createModal.addEventListener("click", function (e) {
+      if (e.target === el.createModal) closeCreateModal();
+    });
+
+    el.unlockBtn.addEventListener("click", function () {
+      if (el.passwordInput.value === CONFIG.ADMIN_PASSWORD) {
+        state.unlocked = true;
+        showModalError("");
+        el.modalTitle.textContent = "Create Content";
+        el.authStep.classList.add("hidden");
+        el.createStep.classList.remove("hidden");
+        syncTokenUI();
+        populateCategorySelect();
+      } else {
+        showModalError("Incorrect password.");
+      }
+    });
+
+    el.passwordInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") el.unlockBtn.click();
+    });
+
+    el.changeTokenBtn.addEventListener("click", function () {
+      el.ghTokenInput.value = "";
+      el.tokenSavedRow.classList.add("hidden");
+      el.tokenInputWrap.classList.remove("hidden");
+      el.ghTokenInput.focus();
+    });
+
+    el.tabFileBtn.addEventListener("click", function () { switchModalTab("file"); });
+    el.tabCatBtn.addEventListener("click", function () { switchModalTab("cat"); });
+    el.submitCatBtn.addEventListener("click", handleCreateCategory);
+    el.submitFileBtn.addEventListener("click", handleUploadFile);
 
     el.searchInput.addEventListener("input", function (e) {
       state.searchQuery = e.target.value;
