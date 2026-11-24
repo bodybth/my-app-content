@@ -1,22 +1,5 @@
 {
   "appTitle": "الأقسام الرئيسية",
   "appSubtitle": "اختر القسم للبدء",
-  "categories": [
-    {
-      "id": "cat-1",
-      "title": "القسم الأول",
-      "description": "وصف مختصر لمحتويات القسم الأول",
-      "icon": "📘",
-      "items": [
-        {
-          "id": "cat1-item1",
-          "title": "العنصر الأول (شرح)",
-          "subtitle": "محتوى تجريبي مربوط بصفحة HTML على GitHub",
-          "tag": "نوع أ",
-          "icon": "📖",
-          "url": "pages/category-1/item-1.html"
-        }
-      ]
-    }
-  ]
+  "categories": []
 }
