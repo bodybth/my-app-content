@@ -17,6 +17,8 @@
       --primary-soft: rgba(37, 99, 235, 0.1);
       --danger: #dc2626;
       --danger-soft: rgba(220, 38, 38, 0.1);
+      --admin-bg: #f59e0b;
+      --admin-text: #ffffff;
       --warning-bg: #fef3c7;
       --warning-text: #92400e;
       --shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
@@ -33,7 +35,9 @@
       --primary: #3b82f6;
       --primary-soft: rgba(59, 130, 246, 0.16);
       --danger: #f87171;
-      --danger-soft: rgba(248, 113, 113, 0.14);
+      --danger-soft: rgba(248, 113, 113, 0.16);
+      --admin-bg: #d97706;
+      --admin-text: #ffffff;
       --warning-bg: #451a03;
       --warning-text: #fde68a;
       --shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
@@ -99,24 +103,30 @@
       flex-shrink: 0;
     }
 
-    .create-btn {
+    .mode-btn {
       height: 40px;
       padding: 0 13px;
       border-radius: 12px;
       border: none;
       background: var(--primary);
       color: #ffffff;
-      font-size: 0.86rem;
+      font-size: 0.84rem;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      transition: transform 0.12s ease, opacity 0.15s ease;
+      white-space: nowrap;
+      transition: transform 0.12s ease, background-color 0.15s ease;
     }
 
-    .create-btn:active {
+    .mode-btn.admin-active {
+      background: var(--admin-bg);
+      color: var(--admin-text);
+    }
+
+    .mode-btn:active {
       transform: scale(0.95);
     }
 
@@ -168,6 +178,48 @@
       padding: 16px;
     }
 
+    /* Admin Action Bar (below topbar, above categories/items) */
+    .admin-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 10px 14px;
+      background: var(--primary-soft);
+      border: 1.5px dashed var(--primary);
+      border-radius: 14px;
+    }
+
+    .admin-bar-label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .add-plus-btn {
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 11px;
+      border: none;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow);
+    }
+
+    .add-plus-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Search Bar */
     .search-wrap {
       position: relative;
       margin-bottom: 16px;
@@ -223,6 +275,7 @@
       display: flex;
     }
 
+    /* Cards Grid & List */
     .cards-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -276,6 +329,7 @@
       font-weight: 700;
       margin-bottom: 3px;
       color: var(--text);
+      word-break: break-word;
     }
 
     .card-desc {
@@ -303,6 +357,32 @@
       font-weight: 600;
       background: var(--primary-soft);
       color: var(--primary);
+    }
+
+    .card-right-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .edit-pencil-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .edit-pencil-btn:active {
+      transform: scale(0.92);
+      border-color: var(--primary);
     }
 
     .card-arrow {
@@ -356,21 +436,23 @@
       width: 100%;
     }
 
-    .btn-primary:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
-    .btn-secondary {
-      background: var(--surface-alt);
-      color: var(--text);
-      border: 1px solid var(--border);
+    .btn-danger {
+      background: var(--danger);
+      color: #ffffff;
+      border: none;
       border-radius: 12px;
-      padding: 10px 16px;
-      font-size: 0.88rem;
-      font-weight: 600;
+      padding: 11px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
       font-family: inherit;
       cursor: pointer;
+      width: 100%;
+    }
+
+    .btn-primary:disabled,
+    .btn-danger:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
     .spinner {
@@ -383,7 +465,7 @@
       animation: spin 0.75s linear infinite;
     }
 
-    /* Modal Styles */
+    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -422,6 +504,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       margin-bottom: 14px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
@@ -432,10 +515,16 @@
       font-weight: 700;
     }
 
+    .modal-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
     .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      display: flex;
+      gap: 6px;
       background: var(--surface-alt);
       padding: 4px;
       border-radius: 12px;
@@ -443,12 +532,13 @@
     }
 
     .tab-btn {
-      padding: 9px;
+      flex: 1;
+      padding: 9px 6px;
       border: none;
       border-radius: 9px;
       background: transparent;
       color: var(--text-muted);
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
@@ -458,6 +548,10 @@
       background: var(--surface);
       color: var(--primary);
       box-shadow: var(--shadow);
+    }
+
+    .tab-btn.danger-tab.active {
+      color: var(--danger);
     }
 
     .field {
@@ -473,7 +567,6 @@
     }
 
     .input,
-    .select,
     .textarea {
       width: 100%;
       padding: 10px 12px;
@@ -487,7 +580,6 @@
     }
 
     .input:focus,
-    .select:focus,
     .textarea:focus {
       border-color: var(--primary);
     }
@@ -515,6 +607,17 @@
       margin-bottom: 12px;
     }
 
+    .danger-box {
+      background: var(--danger-soft);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
     .token-row {
       display: flex;
       align-items: center;
@@ -523,7 +626,7 @@
       background: var(--surface-alt);
       padding: 8px 12px;
       border-radius: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       font-size: 0.8rem;
     }
 
@@ -584,13 +687,19 @@
       <div id="headerSubtitle" class="topbar-subtitle" dir="auto">Select a category to browse</div>
     </div>
     <div class="topbar-actions">
-      <button id="createBtn" class="create-btn" aria-label="Create">+ Create</button>
+      <button id="modeBtn" class="mode-btn" type="button">As Admin</button>
       <button id="refreshBtn" class="icon-btn" aria-label="Refresh" title="Refresh">↻</button>
       <button id="themeBtn" class="icon-btn" aria-label="Toggle Theme" title="Toggle Theme">🌙</button>
     </div>
   </header>
 
   <main class="container">
+    <!-- Admin Bar with Contextual (+) Button -->
+    <div id="adminBar" class="admin-bar hidden">
+      <span id="adminBarLabel" class="admin-bar-label">Admin Mode Active</span>
+      <button id="addContextBtn" class="add-plus-btn" type="button">+ Add Category</button>
+    </div>
+
     <div id="searchWrap" class="search-wrap hidden">
       <span class="search-icon">🔍</span>
       <input id="searchInput" class="search-input" type="search" placeholder="Search categories or items..." autocomplete="off" />
@@ -600,88 +709,141 @@
     <div id="appContent"></div>
   </main>
 
-  <!-- Create Modal (Password + GitHub Upload) -->
-  <div id="createModal" class="modal-backdrop" aria-hidden="true">
+  <!-- Modal 1: Admin Login (Password + One-Time Token) -->
+  <div id="loginModal" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card">
       <div class="modal-header">
-        <div id="modalTitle" class="modal-title">Admin Access</div>
-        <button id="closeModalBtn" class="icon-btn" style="width:34px;height:34px;font-size:0.95rem;" aria-label="Close">✕</button>
+        <div>
+          <div class="modal-title">Admin Login</div>
+          <div class="modal-subtitle">Enter credentials to enable editing mode</div>
+        </div>
+        <button id="closeLoginBtn" class="icon-btn" style="width:34px;height:34px;font-size:0.95rem;" aria-label="Close">✕</button>
       </div>
 
-      <div id="modalError" class="error-msg hidden"></div>
+      <div id="loginError" class="error-msg hidden"></div>
 
-      <!-- Step 1: Password Gate -->
-      <div id="authStep">
+      <div class="field">
+        <label class="field-label" for="loginPasswordInput">Admin Password</label>
+        <input id="loginPasswordInput" class="input" type="password" placeholder="Enter password" autocomplete="off" />
+      </div>
+
+      <div id="loginTokenSavedRow" class="token-row hidden">
+        <span>🔑 GitHub Token: <strong>Saved on this device</strong></span>
+        <button id="changeLoginTokenBtn" class="link-btn" type="button">Change</button>
+      </div>
+
+      <div id="loginTokenWrap" class="field">
+        <label class="field-label" for="loginTokenInput">GitHub Fine-Grained Token (One-Time Setup)</label>
+        <input id="loginTokenInput" class="input" type="password" placeholder="github_pat_..." autocomplete="off" />
+        <div class="helper-text">Saved locally on this device so you only need to enter it once.</div>
+      </div>
+
+      <button id="confirmLoginBtn" class="btn-primary" type="button">Enter Admin Mode</button>
+    </div>
+  </div>
+
+  <!-- Modal 2: Contextual Add Modal (Add Category OR Add Page) -->
+  <div id="addModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div id="addModalTitle" class="modal-title">Add Category</div>
+          <div id="addModalSubtitle" class="modal-subtitle"></div>
+        </div>
+        <button id="closeAddBtn" class="icon-btn" style="width:34px;height:34px;font-size:0.95rem;" aria-label="Close">✕</button>
+      </div>
+
+      <div id="addError" class="error-msg hidden"></div>
+
+      <!-- Add Category Form -->
+      <div id="addCatForm" class="hidden">
         <div class="field">
-          <label class="field-label" for="passwordInput">Admin Password</label>
-          <input id="passwordInput" class="input" type="password" placeholder="Enter password" autocomplete="off" />
+          <label class="field-label" for="newCatNameInput">Category Name (e.g. AI &amp; ML)</label>
+          <input id="newCatNameInput" class="input" type="text" placeholder="Enter category name" />
         </div>
-        <button id="unlockBtn" class="btn-primary">Unlock</button>
+        <div class="field">
+          <label class="field-label" for="newCatDescInput">Description (Optional)</label>
+          <input id="newCatDescInput" class="input" type="text" placeholder="Short description" />
+        </div>
+        <div class="field">
+          <label class="field-label" for="newCatIconInput">Icon / Emoji (Optional)</label>
+          <input id="newCatIconInput" class="input" type="text" value="📘" maxlength="4" />
+        </div>
+        <button id="submitAddCatBtn" class="btn-primary" type="button">Create Category</button>
       </div>
 
-      <!-- Step 2: Create Panel -->
-      <div id="createStep" class="hidden">
-        <!-- GitHub Token Setup (Saved once per device) -->
-        <div id="tokenSavedRow" class="token-row hidden">
-          <span>🔑 GitHub Token: <strong>Saved on this device</strong></span>
-          <button id="changeTokenBtn" class="link-btn" type="button">Change</button>
+      <!-- Add File Form -->
+      <div id="addFileForm" class="hidden">
+        <div class="field">
+          <label class="field-label" for="newFileNameInput">Page Display Name (e.g. ai &amp; ml)</label>
+          <input id="newFileNameInput" class="input" type="text" placeholder="Enter title as it should appear" />
         </div>
-        <div id="tokenInputWrap" class="field">
-          <label class="field-label" for="ghTokenInput">GitHub Fine-Grained Token (Repo Contents Write)</label>
-          <input id="ghTokenInput" class="input" type="password" placeholder="github_pat_..." autocomplete="off" />
-          <div class="helper-text">Saved locally on this device only. Required once to commit directly to GitHub.</div>
+        <div class="field">
+          <label class="field-label" for="newFileInput">Select HTML File</label>
+          <input id="newFileInput" class="input" type="file" accept=".html,.htm,text/html" />
+          <div class="helper-text">Or paste HTML code directly below.</div>
         </div>
-
-        <div class="tabs">
-          <button id="tabFileBtn" class="tab-btn active" type="button">Upload File</button>
-          <button id="tabCatBtn" class="tab-btn" type="button">New Category</button>
+        <div class="field">
+          <label class="field-label" for="newFilePasteInput">HTML Code (Optional Fallback)</label>
+          <textarea id="newFilePasteInput" class="textarea" placeholder="<!DOCTYPE html>..."></textarea>
         </div>
+        <button id="submitAddFileBtn" class="btn-primary" type="button">Upload Page</button>
+      </div>
+    </div>
+  </div>
 
-        <!-- Tab 1: Upload HTML File -->
-        <div id="fileForm">
-          <div class="field">
-            <label class="field-label" for="fileCatSelect">Category</label>
-            <select id="fileCatSelect" class="select"></select>
-          </div>
-
-          <div class="field">
-            <label class="field-label" for="fileNameInput">Display Name (e.g. ai &amp; ml)</label>
-            <input id="fileNameInput" class="input" type="text" placeholder="Enter title as it should appear" />
-          </div>
-
-          <div class="field">
-            <label class="field-label" for="htmlFileInput">Choose HTML File</label>
-            <input id="htmlFileInput" class="input" type="file" accept=".html,.htm,text/html" />
-            <div class="helper-text">Or paste HTML code directly below if you do not want to pick a file.</div>
-          </div>
-
-          <div class="field">
-            <label class="field-label" for="htmlPasteInput">HTML Code (Optional Fallback)</label>
-            <textarea id="htmlPasteInput" class="textarea" placeholder="<!DOCTYPE html>..."></textarea>
-          </div>
-
-          <button id="submitFileBtn" class="btn-primary" type="button">Upload File to GitHub</button>
+  <!-- Modal 3: Manage Item / Category (Pencil Button) -->
+  <div id="manageModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div id="manageModalTitle" class="modal-title">Manage</div>
+          <div id="manageModalSubtitle" class="modal-subtitle"></div>
         </div>
+        <button id="closeManageBtn" class="icon-btn" style="width:34px;height:34px;font-size:0.95rem;" aria-label="Close">✕</button>
+      </div>
 
-        <!-- Tab 2: Add Category -->
-        <div id="catForm" class="hidden">
-          <div class="field">
-            <label class="field-label" for="catNameInput">Category Name (e.g. AI &amp; ML)</label>
-            <input id="catNameInput" class="input" type="text" placeholder="Enter category name" />
-          </div>
+      <div id="manageError" class="error-msg hidden"></div>
 
-          <div class="field">
-            <label class="field-label" for="catDescInput">Description (Optional)</label>
-            <input id="catDescInput" class="input" type="text" placeholder="Short description" />
-          </div>
+      <div class="tabs">
+        <button id="tabRenameBtn" class="tab-btn active" type="button">Rename</button>
+        <button id="tabUpdateBtn" class="tab-btn hidden" type="button">Update File</button>
+        <button id="tabDeleteBtn" class="tab-btn danger-tab" type="button">Delete</button>
+      </div>
 
-          <div class="field">
-            <label class="field-label" for="catIconInput">Icon / Emoji (Optional)</label>
-            <input id="catIconInput" class="input" type="text" value="📘" maxlength="4" />
-          </div>
-
-          <button id="submitCatBtn" class="btn-primary" type="button">Create Category</button>
+      <!-- Rename Panel -->
+      <div id="panelRename">
+        <div class="field">
+          <label class="field-label" for="renameInput">New Display Name</label>
+          <input id="renameInput" class="input" type="text" placeholder="Enter new name" />
         </div>
+        <button id="submitRenameBtn" class="btn-primary" type="button">Save Name</button>
+      </div>
+
+      <!-- Update File Panel (Pages only) -->
+      <div id="panelUpdate" class="hidden">
+        <div class="field">
+          <label class="field-label" for="updateFileInput">Choose Replacement HTML File</label>
+          <input id="updateFileInput" class="input" type="file" accept=".html,.htm,text/html" />
+          <div class="helper-text">The new file will replace the existing page on GitHub.</div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="updateFilePasteInput">Or Paste New HTML Code</label>
+          <textarea id="updateFilePasteInput" class="textarea" placeholder="<!DOCTYPE html>..."></textarea>
+        </div>
+        <button id="submitUpdateBtn" class="btn-primary" type="button">Update File on GitHub</button>
+      </div>
+
+      <!-- Delete Panel (Password Confirmation Required) -->
+      <div id="panelDelete" class="hidden">
+        <div id="deleteWarningText" class="danger-box">
+          This action is permanent and cannot be undone.
+        </div>
+        <div class="field">
+          <label class="field-label" for="deletePasswordInput">Confirm Password to Delete</label>
+          <input id="deletePasswordInput" class="input" type="password" placeholder="Re-enter admin password" autocomplete="off" />
+        </div>
+        <button id="submitDeleteBtn" class="btn-danger" type="button">Confirm Delete</button>
       </div>
     </div>
   </div>
@@ -703,7 +865,8 @@
     const STORAGE_KEYS = {
       DATA: "app_cached_data_v1",
       THEME: "app_theme_preference_v1",
-      GH_TOKEN: "app_github_pat_v1"
+      GH_TOKEN: "app_github_pat_v1",
+      ADMIN_MODE: "app_admin_mode_v1"
     };
 
     const state = {
@@ -712,47 +875,72 @@
       error: null,
       selectedCategoryId: null,
       searchQuery: "",
-      unlocked: false,
-      activeTab: "file",
-      isBusy: false
+      isAdmin: false,
+      isBusy: false,
+      manageTarget: null
     };
 
     const el = {
       offlineBanner: document.getElementById("offlineBanner"),
       headerTitle: document.getElementById("headerTitle"),
       headerSubtitle: document.getElementById("headerSubtitle"),
-      createBtn: document.getElementById("createBtn"),
+      modeBtn: document.getElementById("modeBtn"),
       refreshBtn: document.getElementById("refreshBtn"),
       themeBtn: document.getElementById("themeBtn"),
+      adminBar: document.getElementById("adminBar"),
+      adminBarLabel: document.getElementById("adminBarLabel"),
+      addContextBtn: document.getElementById("addContextBtn"),
       searchWrap: document.getElementById("searchWrap"),
       searchInput: document.getElementById("searchInput"),
       searchClear: document.getElementById("searchClear"),
       appContent: document.getElementById("appContent"),
-      createModal: document.getElementById("createModal"),
-      modalTitle: document.getElementById("modalTitle"),
-      closeModalBtn: document.getElementById("closeModalBtn"),
-      modalError: document.getElementById("modalError"),
-      authStep: document.getElementById("authStep"),
-      passwordInput: document.getElementById("passwordInput"),
-      unlockBtn: document.getElementById("unlockBtn"),
-      createStep: document.getElementById("createStep"),
-      tokenSavedRow: document.getElementById("tokenSavedRow"),
-      changeTokenBtn: document.getElementById("changeTokenBtn"),
-      tokenInputWrap: document.getElementById("tokenInputWrap"),
-      ghTokenInput: document.getElementById("ghTokenInput"),
-      tabFileBtn: document.getElementById("tabFileBtn"),
-      tabCatBtn: document.getElementById("tabCatBtn"),
-      fileForm: document.getElementById("fileForm"),
-      catForm: document.getElementById("catForm"),
-      fileCatSelect: document.getElementById("fileCatSelect"),
-      fileNameInput: document.getElementById("fileNameInput"),
-      htmlFileInput: document.getElementById("htmlFileInput"),
-      htmlPasteInput: document.getElementById("htmlPasteInput"),
-      submitFileBtn: document.getElementById("submitFileBtn"),
-      catNameInput: document.getElementById("catNameInput"),
-      catDescInput: document.getElementById("catDescInput"),
-      catIconInput: document.getElementById("catIconInput"),
-      submitCatBtn: document.getElementById("submitCatBtn"),
+
+      loginModal: document.getElementById("loginModal"),
+      closeLoginBtn: document.getElementById("closeLoginBtn"),
+      loginError: document.getElementById("loginError"),
+      loginPasswordInput: document.getElementById("loginPasswordInput"),
+      loginTokenSavedRow: document.getElementById("loginTokenSavedRow"),
+      changeLoginTokenBtn: document.getElementById("changeLoginTokenBtn"),
+      loginTokenWrap: document.getElementById("loginTokenWrap"),
+      loginTokenInput: document.getElementById("loginTokenInput"),
+      confirmLoginBtn: document.getElementById("confirmLoginBtn"),
+
+      addModal: document.getElementById("addModal"),
+      addModalTitle: document.getElementById("addModalTitle"),
+      addModalSubtitle: document.getElementById("addModalSubtitle"),
+      closeAddBtn: document.getElementById("closeAddBtn"),
+      addError: document.getElementById("addError"),
+      addCatForm: document.getElementById("addCatForm"),
+      newCatNameInput: document.getElementById("newCatNameInput"),
+      newCatDescInput: document.getElementById("newCatDescInput"),
+      newCatIconInput: document.getElementById("newCatIconInput"),
+      submitAddCatBtn: document.getElementById("submitAddCatBtn"),
+      addFileForm: document.getElementById("addFileForm"),
+      newFileNameInput: document.getElementById("newFileNameInput"),
+      newFileInput: document.getElementById("newFileInput"),
+      newFilePasteInput: document.getElementById("newFilePasteInput"),
+      submitAddFileBtn: document.getElementById("submitAddFileBtn"),
+
+      manageModal: document.getElementById("manageModal"),
+      manageModalTitle: document.getElementById("manageModalTitle"),
+      manageModalSubtitle: document.getElementById("manageModalSubtitle"),
+      closeManageBtn: document.getElementById("closeManageBtn"),
+      manageError: document.getElementById("manageError"),
+      tabRenameBtn: document.getElementById("tabRenameBtn"),
+      tabUpdateBtn: document.getElementById("tabUpdateBtn"),
+      tabDeleteBtn: document.getElementById("tabDeleteBtn"),
+      panelRename: document.getElementById("panelRename"),
+      renameInput: document.getElementById("renameInput"),
+      submitRenameBtn: document.getElementById("submitRenameBtn"),
+      panelUpdate: document.getElementById("panelUpdate"),
+      updateFileInput: document.getElementById("updateFileInput"),
+      updateFilePasteInput: document.getElementById("updateFilePasteInput"),
+      submitUpdateBtn: document.getElementById("submitUpdateBtn"),
+      panelDelete: document.getElementById("panelDelete"),
+      deleteWarningText: document.getElementById("deleteWarningText"),
+      deletePasswordInput: document.getElementById("deletePasswordInput"),
+      submitDeleteBtn: document.getElementById("submitDeleteBtn"),
+
       toast: document.getElementById("toast")
     };
 
@@ -843,7 +1031,7 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(function () {
         el.toast.classList.remove("show");
-      }, duration || 2600);
+      }, duration || 2800);
     }
 
     function updateNetworkStatus() {
@@ -1009,7 +1197,28 @@
       return state.data.categories.find(function (c) { return c.id === id; }) || null;
     }
 
+    function syncAdminChrome() {
+      if (state.isAdmin) {
+        el.modeBtn.textContent = "As a User";
+        el.modeBtn.classList.add("admin-active");
+        el.adminBar.classList.remove("hidden");
+        if (state.selectedCategoryId && getCategoryById(state.selectedCategoryId)) {
+          el.adminBarLabel.textContent = "Admin Mode — Manage Pages";
+          el.addContextBtn.textContent = "+ Add Page";
+        } else {
+          el.adminBarLabel.textContent = "Admin Mode — Manage Categories";
+          el.addContextBtn.textContent = "+ Add Category";
+        }
+      } else {
+        el.modeBtn.textContent = "As Admin";
+        el.modeBtn.classList.remove("admin-active");
+        el.adminBar.classList.add("hidden");
+      }
+    }
+
     function render() {
+      syncAdminChrome();
+
       if (state.loading && !state.data) {
         el.searchWrap.classList.add("hidden");
         el.headerTitle.textContent = CONFIG.DEFAULT_TITLE;
@@ -1078,7 +1287,7 @@
           '<div class="state-box">' +
             '<div class="state-emoji">🗂️</div>' +
             '<div class="state-title">No Matching Results</div>' +
-            '<div class="state-text">' + (q ? "Try a different search keyword" : "No categories added yet. Tap + Create to add one.") + '</div>' +
+            '<div class="state-text">' + (q ? "Try a different search keyword" : "No categories added yet.") + '</div>' +
           '</div>';
         return;
       }
@@ -1088,6 +1297,9 @@
           const count = Array.isArray(cat.items) ? cat.items.length : 0;
           const descHtml = cat.description
             ? '<div class="card-desc" dir="auto">' + escapeHtml(cat.description) + '</div>'
+            : "";
+          const editBtnHtml = state.isAdmin
+            ? '<button class="edit-pencil-btn" type="button" data-edit-cat="' + escapeHtml(cat.id) + '" aria-label="Edit Category" title="Edit Category">✏️</button>'
             : "";
           return (
             '<article class="card" data-cat-id="' + escapeHtml(cat.id) + '">' +
@@ -1099,7 +1311,10 @@
                   '<span class="badge">' + count + " " + (count === 1 ? "item" : "items") + '</span>' +
                 '</div>' +
               '</div>' +
-              '<div class="card-arrow">›</div>' +
+              '<div class="card-right-controls">' +
+                editBtnHtml +
+                '<div class="card-arrow">›</div>' +
+              '</div>' +
             '</article>'
           );
         })
@@ -1110,6 +1325,14 @@
       el.appContent.querySelectorAll(".card[data-cat-id]").forEach(function (card) {
         card.addEventListener("click", function () {
           openCategory(card.getAttribute("data-cat-id"));
+        });
+      });
+
+      el.appContent.querySelectorAll("[data-edit-cat]").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          const catId = btn.getAttribute("data-edit-cat");
+          openManageModal("category", catId, null);
         });
       });
     }
@@ -1137,7 +1360,7 @@
           '<div class="state-box">' +
             '<div class="state-emoji">📄</div>' +
             '<div class="state-title">No Items Found</div>' +
-            '<div class="state-text">' + (q ? "No items match your search" : "This category is empty. Tap + Create to upload a file.") + '</div>' +
+            '<div class="state-text">' + (q ? "No items match your search" : "This category is empty.") + '</div>' +
           '</div>';
         return;
       }
@@ -1150,6 +1373,9 @@
           const tagHtml = item.tag
             ? '<div class="card-meta"><span class="badge">' + escapeHtml(item.tag) + '</span></div>'
             : "";
+          const editBtnHtml = state.isAdmin
+            ? '<button class="edit-pencil-btn" type="button" data-edit-item="' + escapeHtml(item.id) + '" aria-label="Edit Page" title="Edit Page">✏️</button>'
+            : "";
           return (
             '<article class="card" data-item-id="' + escapeHtml(item.id) + '">' +
               '<div class="card-icon">' + escapeHtml(item.icon || "📄") + '</div>' +
@@ -1158,7 +1384,10 @@
                 subHtml +
                 tagHtml +
               '</div>' +
-              '<div class="card-arrow">›</div>' +
+              '<div class="card-right-controls">' +
+                editBtnHtml +
+                '<div class="card-arrow">›</div>' +
+              '</div>' +
             '</article>'
           );
         })
@@ -1173,10 +1402,18 @@
           openItemPage(found);
         });
       });
+
+      el.appContent.querySelectorAll("[data-edit-item]").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          const itemId = btn.getAttribute("data-edit-item");
+          openManageModal("item", cat.id, itemId);
+        });
+      });
     }
 
     /* ==========================================
-       GitHub API Helpers (Create Category / Upload File)
+       GitHub API Helpers
     ========================================== */
     function ghApiUrl(path) {
       return (
@@ -1187,13 +1424,20 @@
       );
     }
 
+    function getSavedToken() {
+      return safeStorageGet(STORAGE_KEYS.GH_TOKEN) || "";
+    }
+
     async function ghGetFile(path, token) {
-      const res = await fetch(ghApiUrl(path) + "?ref=" + encodeURIComponent(CONFIG.GITHUB_BRANCH) + "&t=" + Date.now(), {
-        headers: {
-          "Authorization": "Bearer " + token,
-          "Accept": "application/vnd.github+json"
+      const res = await fetch(
+        ghApiUrl(path) + "?ref=" + encodeURIComponent(CONFIG.GITHUB_BRANCH) + "&t=" + Date.now(),
+        {
+          headers: {
+            "Authorization": "Bearer " + token,
+            "Accept": "application/vnd.github+json"
+          }
         }
-      });
+      );
       if (res.status === 404) return null;
       if (!res.ok) {
         const errData = await res.json().catch(function () { return {}; });
@@ -1208,9 +1452,7 @@
         content: utf8ToBase64(contentStr),
         branch: CONFIG.GITHUB_BRANCH
       };
-      if (existingSha) {
-        body.sha = existingSha;
-      }
+      if (existingSha) body.sha = existingSha;
 
       const res = await fetch(ghApiUrl(path), {
         method: "PUT",
@@ -1224,140 +1466,174 @@
 
       if (!res.ok) {
         const errData = await res.json().catch(function () { return {}; });
-        throw new Error(errData.message || "GitHub upload failed (" + res.status + ")");
+        throw new Error(errData.message || "GitHub write failed (" + res.status + ")");
       }
       return await res.json();
     }
 
-    /* ==========================================
-       Create Modal Logic
-    ========================================== */
-    function showModalError(msg) {
-      if (!msg) {
-        el.modalError.classList.add("hidden");
-        el.modalError.textContent = "";
-      } else {
-        el.modalError.textContent = msg;
-        el.modalError.classList.remove("hidden");
-      }
-    }
-
-    function syncTokenUI() {
-      const savedToken = safeStorageGet(STORAGE_KEYS.GH_TOKEN);
-      if (savedToken) {
-        el.tokenSavedRow.classList.remove("hidden");
-        el.tokenInputWrap.classList.add("hidden");
-      } else {
-        el.tokenSavedRow.classList.add("hidden");
-        el.tokenInputWrap.classList.remove("hidden");
-      }
-    }
-
-    function populateCategorySelect() {
-      const categories = (state.data && state.data.categories) || [];
-      el.fileCatSelect.innerHTML = "";
-      if (categories.length === 0) {
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "No categories yet — create one first";
-        el.fileCatSelect.appendChild(opt);
-        return;
-      }
-      categories.forEach(function (cat) {
-        const opt = document.createElement("option");
-        opt.value = cat.id;
-        opt.textContent = cat.title || cat.id;
-        if (state.selectedCategoryId && cat.id === state.selectedCategoryId) {
-          opt.selected = true;
-        }
-        el.fileCatSelect.appendChild(opt);
+    async function ghDeleteFile(path, sha, commitMsg, token) {
+      const res = await fetch(ghApiUrl(path), {
+        method: "DELETE",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: commitMsg,
+          sha: sha,
+          branch: CONFIG.GITHUB_BRANCH
+        })
       });
+
+      if (!res.ok && res.status !== 404) {
+        const errData = await res.json().catch(function () { return {}; });
+        throw new Error(errData.message || "GitHub delete failed (" + res.status + ")");
+      }
     }
 
-    function switchModalTab(tab) {
-      state.activeTab = tab;
-      showModalError("");
-      if (tab === "file") {
-        el.tabFileBtn.classList.add("active");
-        el.tabCatBtn.classList.remove("active");
-        el.fileForm.classList.remove("hidden");
-        el.catForm.classList.add("hidden");
-        populateCategorySelect();
+    function setBoxError(boxEl, msg) {
+      if (!msg) {
+        boxEl.classList.add("hidden");
+        boxEl.textContent = "";
       } else {
-        el.tabCatBtn.classList.add("active");
-        el.tabFileBtn.classList.remove("active");
-        el.catForm.classList.remove("hidden");
-        el.fileForm.classList.add("hidden");
+        boxEl.textContent = msg;
+        boxEl.classList.remove("hidden");
       }
-    }
-
-    function openCreateModal() {
-      showModalError("");
-      el.createModal.classList.add("open");
-      el.createModal.setAttribute("aria-hidden", "false");
-
-      if (state.unlocked) {
-        el.modalTitle.textContent = "Create Content";
-        el.authStep.classList.add("hidden");
-        el.createStep.classList.remove("hidden");
-        syncTokenUI();
-        populateCategorySelect();
-      } else {
-        el.modalTitle.textContent = "Admin Access";
-        el.authStep.classList.remove("hidden");
-        el.createStep.classList.add("hidden");
-        el.passwordInput.value = "";
-        setTimeout(function () { el.passwordInput.focus(); }, 60);
-      }
-    }
-
-    function closeCreateModal() {
-      if (state.isBusy) return;
-      el.createModal.classList.remove("open");
-      el.createModal.setAttribute("aria-hidden", "true");
-      showModalError("");
-    }
-
-    function getActiveToken() {
-      const typed = el.ghTokenInput.value.trim();
-      if (typed) {
-        safeStorageSet(STORAGE_KEYS.GH_TOKEN, typed);
-        syncTokenUI();
-        return typed;
-      }
-      return safeStorageGet(STORAGE_KEYS.GH_TOKEN) || "";
     }
 
     function setBusy(busy, btn, label) {
       state.isBusy = busy;
-      el.submitFileBtn.disabled = busy;
-      el.submitCatBtn.disabled = busy;
+      el.submitAddCatBtn.disabled = busy;
+      el.submitAddFileBtn.disabled = busy;
+      el.submitRenameBtn.disabled = busy;
+      el.submitUpdateBtn.disabled = busy;
+      el.submitDeleteBtn.disabled = busy;
       if (btn && label) btn.textContent = label;
     }
 
-    async function handleCreateCategory() {
-      showModalError("");
+    /* ==========================================
+       Modal 1: Admin Login / Switch to User
+    ========================================== */
+    function openLoginModal() {
+      setBoxError(el.loginError, "");
+      el.loginPasswordInput.value = "";
+      el.loginTokenInput.value = "";
+
+      if (getSavedToken()) {
+        el.loginTokenSavedRow.classList.remove("hidden");
+        el.loginTokenWrap.classList.add("hidden");
+      } else {
+        el.loginTokenSavedRow.classList.add("hidden");
+        el.loginTokenWrap.classList.remove("hidden");
+      }
+
+      el.loginModal.classList.add("open");
+      el.loginModal.setAttribute("aria-hidden", "false");
+      setTimeout(function () { el.loginPasswordInput.focus(); }, 60);
+    }
+
+    function closeLoginModal() {
+      el.loginModal.classList.remove("open");
+      el.loginModal.setAttribute("aria-hidden", "true");
+    }
+
+    function handleModeToggle() {
+      if (state.isAdmin) {
+        state.isAdmin = false;
+        safeStorageSet(STORAGE_KEYS.ADMIN_MODE, "0");
+        render();
+        showToast("Switched to User Mode", 2000);
+      } else {
+        openLoginModal();
+      }
+    }
+
+    function handleConfirmLogin() {
+      setBoxError(el.loginError, "");
+      const pwd = el.loginPasswordInput.value;
+      if (pwd !== CONFIG.ADMIN_PASSWORD) {
+        setBoxError(el.loginError, "Incorrect password.");
+        return;
+      }
+
+      const typedToken = el.loginTokenInput.value.trim();
+      let finalToken = getSavedToken();
+      if (typedToken) {
+        finalToken = typedToken;
+        safeStorageSet(STORAGE_KEYS.GH_TOKEN, typedToken);
+      }
+
+      if (!finalToken) {
+        setBoxError(el.loginError, "Please enter your GitHub Fine-Grained Token.");
+        return;
+      }
+
+      state.isAdmin = true;
+      safeStorageSet(STORAGE_KEYS.ADMIN_MODE, "1");
+      closeLoginModal();
+      render();
+      showToast("Admin Mode enabled", 2200);
+    }
+
+    /* ==========================================
+       Modal 2: Contextual (+) Add Category / Add Page
+    ========================================== */
+    function openAddModal() {
+      setBoxError(el.addError, "");
+      const activeCat = state.selectedCategoryId ? getCategoryById(state.selectedCategoryId) : null;
+
+      if (activeCat) {
+        el.addModalTitle.textContent = "Add New Page";
+        el.addModalSubtitle.textContent = "Category: " + (activeCat.title || activeCat.id);
+        el.addCatForm.classList.add("hidden");
+        el.addFileForm.classList.remove("hidden");
+        el.newFileNameInput.value = "";
+        el.newFileInput.value = "";
+        el.newFilePasteInput.value = "";
+      } else {
+        el.addModalTitle.textContent = "Add New Category";
+        el.addModalSubtitle.textContent = "Create a new top-level category";
+        el.addFileForm.classList.add("hidden");
+        el.addCatForm.classList.remove("hidden");
+        el.newCatNameInput.value = "";
+        el.newCatDescInput.value = "";
+        el.newCatIconInput.value = "📘";
+      }
+
+      el.addModal.classList.add("open");
+      el.addModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeAddModal() {
+      if (state.isBusy) return;
+      el.addModal.classList.remove("open");
+      el.addModal.setAttribute("aria-hidden", "true");
+    }
+
+    async function handleAddCategory() {
+      setBoxError(el.addError, "");
       if (!navigator.onLine) {
-        showModalError("You must be online to create a category.");
+        setBoxError(el.addError, "Internet connection is required.");
         return;
       }
 
-      const token = getActiveToken();
+      const token = getSavedToken();
       if (!token) {
-        showModalError("Please enter your GitHub Fine-Grained Token first.");
+        setBoxError(el.addError, "GitHub token is missing. Re-enter Admin Mode.");
         return;
       }
 
-      const displayTitle = normalizeDisplayName(el.catNameInput.value);
+      const displayTitle = normalizeDisplayName(el.newCatNameInput.value);
       if (!displayTitle) {
-        showModalError("Category name cannot be empty.");
+        setBoxError(el.addError, "Category name cannot be empty.");
         return;
       }
 
-      const description = el.catDescInput.value.trim();
-      const icon = el.catIconInput.value.trim() || "📘";
+      const description = el.newCatDescInput.value.trim();
+      const icon = el.newCatIconInput.value.trim() || "📘";
 
-      setBusy(true, el.submitCatBtn, "Creating...");
+      setBusy(true, el.submitAddCatBtn, "Creating...");
 
       try {
         const remoteDataFile = await ghGetFile("data.json", token);
@@ -1410,46 +1686,44 @@
 
         state.data = repoData;
         safeStorageSet(STORAGE_KEYS.DATA, JSON.stringify(repoData));
-        el.catNameInput.value = "";
-        el.catDescInput.value = "";
         render();
 
-        setBusy(false, el.submitCatBtn, "Create Category");
-        closeCreateModal();
-        showToast("Category created and synced to GitHub!", 3200);
+        setBusy(false, el.submitAddCatBtn, "Create Category");
+        closeAddModal();
+        showToast("Category added!", 2800);
       } catch (err) {
-        setBusy(false, el.submitCatBtn, "Create Category");
-        showModalError("Error: " + (err.message || "Failed to create category."));
+        setBusy(false, el.submitAddCatBtn, "Create Category");
+        setBoxError(el.addError, "Error: " + (err.message || "Failed to create category."));
       }
     }
 
-    async function handleUploadFile() {
-      showModalError("");
+    async function handleAddFile() {
+      setBoxError(el.addError, "");
       if (!navigator.onLine) {
-        showModalError("You must be online to upload a file.");
+        setBoxError(el.addError, "Internet connection is required.");
         return;
       }
 
-      const token = getActiveToken();
+      const token = getSavedToken();
       if (!token) {
-        showModalError("Please enter your GitHub Fine-Grained Token first.");
+        setBoxError(el.addError, "GitHub token is missing. Re-enter Admin Mode.");
         return;
       }
 
-      const catId = el.fileCatSelect.value;
+      const catId = state.selectedCategoryId;
       if (!catId) {
-        showModalError("Please select a category (or create one first).");
+        setBoxError(el.addError, "No active category selected.");
         return;
       }
 
-      const displayTitle = normalizeDisplayName(el.fileNameInput.value);
+      const displayTitle = normalizeDisplayName(el.newFileNameInput.value);
       if (!displayTitle) {
-        showModalError("Please enter a display name for the file.");
+        setBoxError(el.addError, "Page display name cannot be empty.");
         return;
       }
 
-      const pickedFile = el.htmlFileInput.files && el.htmlFileInput.files[0];
-      const pastedHtml = el.htmlPasteInput.value;
+      const pickedFile = el.newFileInput.files && el.newFileInput.files[0];
+      const pastedHtml = el.newFilePasteInput.value;
       let htmlContent = "";
 
       if (pickedFile) {
@@ -1457,11 +1731,11 @@
       } else if (pastedHtml && pastedHtml.trim()) {
         htmlContent = pastedHtml;
       } else {
-        showModalError("Please select an HTML file or paste HTML code.");
+        setBoxError(el.addError, "Please select an HTML file or paste HTML code.");
         return;
       }
 
-      setBusy(true, el.submitFileBtn, "Uploading...");
+      setBusy(true, el.submitAddFileBtn, "Uploading...");
 
       try {
         const remoteDataFile = await ghGetFile("data.json", token);
@@ -1472,9 +1746,7 @@
         const dataSha = remoteDataFile.sha;
         const repoData = JSON.parse(base64ToUtf8(remoteDataFile.content));
         const targetCat = (repoData.categories || []).find(function (c) { return c.id === catId; });
-        if (!targetCat) {
-          throw new Error("Selected category no longer exists");
-        }
+        if (!targetCat) throw new Error("Category not found on GitHub");
         if (!Array.isArray(targetCat.items)) targetCat.items = [];
 
         const catFolder = inferCategoryFolder(targetCat);
@@ -1534,61 +1806,350 @@
 
         state.data = repoData;
         safeStorageSet(STORAGE_KEYS.DATA, JSON.stringify(repoData));
-        el.fileNameInput.value = "";
-        el.htmlFileInput.value = "";
-        el.htmlPasteInput.value = "";
         render();
 
-        setBusy(false, el.submitFileBtn, "Upload File to GitHub");
-        closeCreateModal();
-        showToast("Uploaded! Page will be live on GitHub Pages in ~1 min.", 3800);
+        setBusy(false, el.submitAddFileBtn, "Upload Page");
+        closeAddModal();
+        showToast("Page uploaded! Live on GitHub Pages in ~1 min.", 3600);
       } catch (err) {
-        setBusy(false, el.submitFileBtn, "Upload File to GitHub");
-        showModalError("Error: " + (err.message || "Failed to upload file."));
+        setBusy(false, el.submitAddFileBtn, "Upload Page");
+        setBoxError(el.addError, "Error: " + (err.message || "Failed to upload page."));
       }
     }
 
     /* ==========================================
-       Event Bindings & Init
+       Modal 3: Pencil Manage Modal (Rename / Update / Delete)
+    ========================================== */
+    function switchManageTab(tab) {
+      setBoxError(el.manageError, "");
+      el.tabRenameBtn.classList.toggle("active", tab === "rename");
+      el.tabUpdateBtn.classList.toggle("active", tab === "update");
+      el.tabDeleteBtn.classList.toggle("active", tab === "delete");
+
+      el.panelRename.classList.toggle("hidden", tab !== "rename");
+      el.panelUpdate.classList.toggle("hidden", tab !== "update");
+      el.panelDelete.classList.toggle("hidden", tab !== "delete");
+    }
+
+    function openManageModal(type, catId, itemId) {
+      const cat = getCategoryById(catId);
+      if (!cat) return;
+
+      let targetTitle = cat.title || cat.id;
+      let targetItem = null;
+
+      if (type === "item") {
+        targetItem = (cat.items || []).find(function (i) { return i.id === itemId; });
+        if (!targetItem) return;
+        targetTitle = targetItem.title || targetItem.id;
+      }
+
+      state.manageTarget = { type: type, catId: catId, itemId: itemId };
+      setBoxError(el.manageError, "");
+
+      el.manageModalTitle.textContent = type === "category" ? "Manage Category" : "Manage Page";
+      el.manageModalSubtitle.textContent = targetTitle;
+      el.renameInput.value = targetTitle;
+      el.updateFileInput.value = "";
+      el.updateFilePasteInput.value = "";
+      el.deletePasswordInput.value = "";
+
+      if (type === "item") {
+        el.tabUpdateBtn.classList.remove("hidden");
+        el.deleteWarningText.textContent = "This will permanently delete the page \"" + targetTitle + "\" from GitHub.";
+      } else {
+        el.tabUpdateBtn.classList.add("hidden");
+        const count = (cat.items || []).length;
+        el.deleteWarningText.textContent =
+          "This will permanently delete the category \"" + targetTitle + "\" and all (" + count + ") pages inside it.";
+      }
+
+      switchManageTab("rename");
+      el.manageModal.classList.add("open");
+      el.manageModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeManageModal() {
+      if (state.isBusy) return;
+      state.manageTarget = null;
+      el.manageModal.classList.remove("open");
+      el.manageModal.setAttribute("aria-hidden", "true");
+    }
+
+    async function handleRename() {
+      setBoxError(el.manageError, "");
+      if (!state.manageTarget) return;
+      if (!navigator.onLine) {
+        setBoxError(el.manageError, "Internet connection is required.");
+        return;
+      }
+
+      const token = getSavedToken();
+      const newTitle = normalizeDisplayName(el.renameInput.value);
+      if (!newTitle) {
+        setBoxError(el.manageError, "New name cannot be empty.");
+        return;
+      }
+
+      const target = state.manageTarget;
+      setBusy(true, el.submitRenameBtn, "Saving...");
+
+      try {
+        const remoteDataFile = await ghGetFile("data.json", token);
+        if (!remoteDataFile || !remoteDataFile.content) {
+          throw new Error("data.json not found on GitHub");
+        }
+
+        const dataSha = remoteDataFile.sha;
+        const repoData = JSON.parse(base64ToUtf8(remoteDataFile.content));
+        const cat = (repoData.categories || []).find(function (c) { return c.id === target.catId; });
+        if (!cat) throw new Error("Category not found on GitHub");
+
+        let commitMsg = "";
+        if (target.type === "category") {
+          const oldTitle = cat.title;
+          cat.title = newTitle;
+          commitMsg = "Rename category '" + oldTitle + "' to '" + newTitle + "'";
+        } else {
+          const item = (cat.items || []).find(function (i) { return i.id === target.itemId; });
+          if (!item) throw new Error("Page not found on GitHub");
+          const oldTitle = item.title;
+          item.title = newTitle;
+          commitMsg = "Rename page '" + oldTitle + "' to '" + newTitle + "'";
+        }
+
+        await ghPutFile(
+          "data.json",
+          JSON.stringify(repoData, null, 2),
+          commitMsg,
+          token,
+          dataSha
+        );
+
+        state.data = repoData;
+        safeStorageSet(STORAGE_KEYS.DATA, JSON.stringify(repoData));
+        render();
+
+        setBusy(false, el.submitRenameBtn, "Save Name");
+        closeManageModal();
+        showToast("Renamed successfully!", 2600);
+      } catch (err) {
+        setBusy(false, el.submitRenameBtn, "Save Name");
+        setBoxError(el.manageError, "Error: " + (err.message || "Rename failed."));
+      }
+    }
+
+    async function handleUpdateItemFile() {
+      setBoxError(el.manageError, "");
+      if (!state.manageTarget || state.manageTarget.type !== "item") return;
+      if (!navigator.onLine) {
+        setBoxError(el.manageError, "Internet connection is required.");
+        return;
+      }
+
+      const token = getSavedToken();
+      const pickedFile = el.updateFileInput.files && el.updateFileInput.files[0];
+      const pastedHtml = el.updateFilePasteInput.value;
+      let htmlContent = "";
+
+      if (pickedFile) {
+        htmlContent = await pickedFile.text();
+      } else if (pastedHtml && pastedHtml.trim()) {
+        htmlContent = pastedHtml;
+      } else {
+        setBoxError(el.manageError, "Please select an HTML file or paste HTML code.");
+        return;
+      }
+
+      const target = state.manageTarget;
+      const cat = getCategoryById(target.catId);
+      const item = cat ? (cat.items || []).find(function (i) { return i.id === target.itemId; }) : null;
+      if (!item || !item.url) {
+        setBoxError(el.manageError, "Target file URL is missing.");
+        return;
+      }
+
+      setBusy(true, el.submitUpdateBtn, "Updating...");
+
+      try {
+        const existingPage = await ghGetFile(item.url, token);
+        const pageSha = existingPage ? existingPage.sha : null;
+
+        await ghPutFile(
+          item.url,
+          htmlContent,
+          "Update file '" + item.title + "'",
+          token,
+          pageSha
+        );
+
+        setBusy(false, el.submitUpdateBtn, "Update File on GitHub");
+        closeManageModal();
+        showToast("File updated! Live on GitHub Pages in ~1 min.", 3600);
+      } catch (err) {
+        setBusy(false, el.submitUpdateBtn, "Update File on GitHub");
+        setBoxError(el.manageError, "Error: " + (err.message || "Update failed."));
+      }
+    }
+
+    async function handleDelete() {
+      setBoxError(el.manageError, "");
+      if (!state.manageTarget) return;
+
+      /* Mandatory Password Confirmation for any Delete */
+      if (el.deletePasswordInput.value !== CONFIG.ADMIN_PASSWORD) {
+        setBoxError(el.manageError, "Incorrect password. Deletion cancelled.");
+        return;
+      }
+
+      if (!navigator.onLine) {
+        setBoxError(el.manageError, "Internet connection is required.");
+        return;
+      }
+
+      const token = getSavedToken();
+      const target = state.manageTarget;
+      setBusy(true, el.submitDeleteBtn, "Deleting...");
+
+      try {
+        const remoteDataFile = await ghGetFile("data.json", token);
+        if (!remoteDataFile || !remoteDataFile.content) {
+          throw new Error("data.json not found on GitHub");
+        }
+
+        const dataSha = remoteDataFile.sha;
+        const repoData = JSON.parse(base64ToUtf8(remoteDataFile.content));
+        const catIdx = (repoData.categories || []).findIndex(function (c) { return c.id === target.catId; });
+        if (catIdx === -1) throw new Error("Category not found on GitHub");
+
+        const cat = repoData.categories[catIdx];
+
+        if (target.type === "category") {
+          const catTitle = cat.title || cat.id;
+          const folder = inferCategoryFolder(cat);
+
+          /* Delete all files inside the category folder on GitHub */
+          const dirListing = await ghGetFile("pages/" + folder, token);
+          const deletedPaths = {};
+          if (Array.isArray(dirListing)) {
+            for (let i = 0; i < dirListing.length; i++) {
+              const entry = dirListing[i];
+              if (entry && entry.type === "file" && entry.path && entry.sha) {
+                await ghDeleteFile(entry.path, entry.sha, "Delete file in '" + catTitle + "'", token);
+                deletedPaths[entry.path] = true;
+              }
+            }
+          }
+
+          /* Delete any remaining item files if located outside the folder */
+          const catItems = cat.items || [];
+          for (let j = 0; j < catItems.length; j++) {
+            const url = catItems[j].url;
+            if (url && !/^https?:\/\//i.test(url) && !deletedPaths[url]) {
+              const fObj = await ghGetFile(url, token);
+              if (fObj && fObj.sha) {
+                await ghDeleteFile(url, fObj.sha, "Delete page '" + catItems[j].title + "'", token);
+              }
+            }
+          }
+
+          repoData.categories.splice(catIdx, 1);
+
+          await ghPutFile(
+            "data.json",
+            JSON.stringify(repoData, null, 2),
+            "Delete category '" + catTitle + "'",
+            token,
+            dataSha
+          );
+
+          state.data = repoData;
+          safeStorageSet(STORAGE_KEYS.DATA, JSON.stringify(repoData));
+          render();
+
+          setBusy(false, el.submitDeleteBtn, "Confirm Delete");
+          closeManageModal();
+          showToast("Category deleted!", 2800);
+        } else {
+          const itemIdx = (cat.items || []).findIndex(function (i) { return i.id === target.itemId; });
+          if (itemIdx === -1) throw new Error("Page not found on GitHub");
+
+          const item = cat.items[itemIdx];
+          if (item.url && !/^https?:\/\//i.test(item.url)) {
+            const existingPage = await ghGetFile(item.url, token);
+            if (existingPage && existingPage.sha) {
+              await ghDeleteFile(item.url, existingPage.sha, "Delete page '" + item.title + "'", token);
+            }
+          }
+
+          cat.items.splice(itemIdx, 1);
+
+          await ghPutFile(
+            "data.json",
+            JSON.stringify(repoData, null, 2),
+            "Delete page '" + item.title + "' from '" + cat.title + "'",
+            token,
+            dataSha
+          );
+
+          state.data = repoData;
+          safeStorageSet(STORAGE_KEYS.DATA, JSON.stringify(repoData));
+          render();
+
+          setBusy(false, el.submitDeleteBtn, "Confirm Delete");
+          closeManageModal();
+          showToast("Page deleted!", 2800);
+        }
+      } catch (err) {
+        setBusy(false, el.submitDeleteBtn, "Confirm Delete");
+        setBoxError(el.manageError, "Error: " + (err.message || "Delete failed."));
+      }
+    }
+
+    /* ==========================================
+       Event Listeners & Init
     ========================================== */
     el.themeBtn.addEventListener("click", toggleTheme);
     el.refreshBtn.addEventListener("click", function () { fetchRemoteData(true); });
-    el.createBtn.addEventListener("click", openCreateModal);
-    el.closeModalBtn.addEventListener("click", closeCreateModal);
-    el.createModal.addEventListener("click", function (e) {
-      if (e.target === el.createModal) closeCreateModal();
+    el.modeBtn.addEventListener("click", handleModeToggle);
+    el.addContextBtn.addEventListener("click", openAddModal);
+
+    /* Login modal events */
+    el.closeLoginBtn.addEventListener("click", closeLoginModal);
+    el.loginModal.addEventListener("click", function (e) {
+      if (e.target === el.loginModal) closeLoginModal();
+    });
+    el.changeLoginTokenBtn.addEventListener("click", function () {
+      el.loginTokenSavedRow.classList.add("hidden");
+      el.loginTokenWrap.classList.remove("hidden");
+      el.loginTokenInput.focus();
+    });
+    el.confirmLoginBtn.addEventListener("click", handleConfirmLogin);
+    el.loginPasswordInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") handleConfirmLogin();
     });
 
-    el.unlockBtn.addEventListener("click", function () {
-      if (el.passwordInput.value === CONFIG.ADMIN_PASSWORD) {
-        state.unlocked = true;
-        showModalError("");
-        el.modalTitle.textContent = "Create Content";
-        el.authStep.classList.add("hidden");
-        el.createStep.classList.remove("hidden");
-        syncTokenUI();
-        populateCategorySelect();
-      } else {
-        showModalError("Incorrect password.");
-      }
+    /* Add modal events */
+    el.closeAddBtn.addEventListener("click", closeAddModal);
+    el.addModal.addEventListener("click", function (e) {
+      if (e.target === el.addModal) closeAddModal();
     });
+    el.submitAddCatBtn.addEventListener("click", handleAddCategory);
+    el.submitAddFileBtn.addEventListener("click", handleAddFile);
 
-    el.passwordInput.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") el.unlockBtn.click();
+    /* Manage modal events */
+    el.closeManageBtn.addEventListener("click", closeManageModal);
+    el.manageModal.addEventListener("click", function (e) {
+      if (e.target === el.manageModal) closeManageModal();
     });
+    el.tabRenameBtn.addEventListener("click", function () { switchManageTab("rename"); });
+    el.tabUpdateBtn.addEventListener("click", function () { switchManageTab("update"); });
+    el.tabDeleteBtn.addEventListener("click", function () { switchManageTab("delete"); });
+    el.submitRenameBtn.addEventListener("click", handleRename);
+    el.submitUpdateBtn.addEventListener("click", handleUpdateItemFile);
+    el.submitDeleteBtn.addEventListener("click", handleDelete);
 
-    el.changeTokenBtn.addEventListener("click", function () {
-      el.ghTokenInput.value = "";
-      el.tokenSavedRow.classList.add("hidden");
-      el.tokenInputWrap.classList.remove("hidden");
-      el.ghTokenInput.focus();
-    });
-
-    el.tabFileBtn.addEventListener("click", function () { switchModalTab("file"); });
-    el.tabCatBtn.addEventListener("click", function () { switchModalTab("cat"); });
-    el.submitCatBtn.addEventListener("click", handleCreateCategory);
-    el.submitFileBtn.addEventListener("click", handleUploadFile);
-
+    /* Search events */
     el.searchInput.addEventListener("input", function (e) {
       state.searchQuery = e.target.value;
       el.searchClear.classList.toggle("visible", state.searchQuery.length > 0);
@@ -1609,6 +2170,7 @@
 
     window.addEventListener("pageshow", function () {
       state.selectedCategoryId = readCategoryFromUrl();
+      state.isAdmin = safeStorageGet(STORAGE_KEYS.ADMIN_MODE) === "1" && !!getSavedToken();
       render();
       if (navigator.onLine) {
         fetchRemoteData(false);
@@ -1627,9 +2189,11 @@
       }
     });
 
+    /* Boot */
     initTheme();
     updateNetworkStatus();
     state.selectedCategoryId = readCategoryFromUrl();
+    state.isAdmin = safeStorageGet(STORAGE_KEYS.ADMIN_MODE) === "1" && !!getSavedToken();
 
     const cached = loadCachedData();
     if (cached) {
