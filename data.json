@@ -8,7 +8,16 @@
       "title": "ThermoPhysics",
       "description": "",
       "icon": "📘",
-      "items": []
+      "items": [
+        {
+          "id": "item-1795529420517",
+          "title": "Test - 1",
+          "subtitle": "",
+          "tag": "",
+          "icon": "📄",
+          "url": "pages/thermophysics/Test_-_1.html"
+        }
+      ]
     }
   ]
 }
