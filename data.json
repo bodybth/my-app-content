@@ -25,7 +25,16 @@
       "title": "Differntial",
       "description": "",
       "icon": "📘",
-      "items": []
+      "items": [
+        {
+          "id": "item-1795530940904",
+          "title": "Laplace & Inverse Laplace Transform",
+          "subtitle": "",
+          "tag": "",
+          "icon": "📄",
+          "url": "pages/differntial/Laplace_&_Inverse_Laplace_Transform.html"
+        }
+      ]
     }
   ]
 }

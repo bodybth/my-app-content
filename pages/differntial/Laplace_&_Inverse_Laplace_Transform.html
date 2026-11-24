@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Laplace & Inverse Laplace Practice</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --surface: #ffffff;
+      --surface-alt: #eef2f9;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-soft: rgba(37, 99, 235, 0.1);
+      --step-bg: #f8fafc;
+      --ans-bg: #ecfdf5;
+      --ans-border: #10b981;
+      --ans-text: #065f46;
+      --easy-bg: #dcfce7;
+      --easy-text: #166534;
+      --med-bg: #fef3c7;
+      --med-text: #92400e;
+      --hard-bg: #fee2e2;
+      --hard-text: #991b1b;
+      --shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+      --radius: 16px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #1e293b;
+      --surface-alt: #273549;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-soft: rgba(59, 130, 246, 0.16);
+      --step-bg: #162032;
+      --ans-bg: rgba(16, 185, 129, 0.12);
+      --ans-border: #10b981;
+      --ans-text: #6ee7b7;
+      --easy-bg: rgba(34, 197, 94, 0.18);
+      --easy-text: #86efac;
+      --med-bg: rgba(245, 158, 11, 0.18);
+      --med-text: #fcd34d;
+      --hard-bg: rgba(239, 68, 68, 0.18);
+      --hard-text: #fca5a5;
+      --shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 14px 14px 88px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* Top Control Bar */
+    .top-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .topic-select {
+      flex: 1;
+      min-width: 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: inherit;
+      outline: none;
+      box-shadow: var(--shadow);
+    }
+
+    .topic-select:focus {
+      border-color: var(--primary);
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: var(--shadow);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.94);
+    }
+
+    /* Progress Bar */
+    .progress-wrap {
+      margin-bottom: 14px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    /* Question Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topic-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .q-number {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .diff-badge {
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .diff-Easy {
+      background: var(--easy-bg);
+      color: var(--easy-text);
+    }
+
+    .diff-Medium {
+      background: var(--med-bg);
+      color: var(--med-text);
+    }
+
+    .diff-Hard {
+      background: var(--hard-bg);
+      color: var(--hard-text);
+    }
+
+    .prompt-text {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    /* Math Typography (Self-contained, responsive, no clipping) */
+    .math-box {
+      background: var(--step-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: "Cambria Math", "Times New Roman", Georgia, serif;
+      font-size: 1.22rem;
+      color: var(--text);
+      overflow-x: auto;
+      line-height: 1.9;
+    }
+
+    .math-inline {
+      font-family: "Cambria Math", "Times New Roman", Georgia, serif;
+      font-size: 1.08rem;
+    }
+
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 3px;
+      font-size: 0.92em;
+      line-height: 1.25;
+    }
+
+    .frac > .num {
+      border-bottom: 1.5px solid currentColor;
+      padding: 0 4px 2px;
+      text-align: center;
+    }
+
+    .frac > .den {
+      padding: 2px 4px 0;
+      text-align: center;
+    }
+
+    sup, sub {
+      font-size: 0.74em;
+      line-height: 0;
+    }
+
+    .op-laplace {
+      font-style: italic;
+      font-weight: 700;
+      margin-right: 2px;
+    }
+
+    /* Show Answer Button */
+    .toggle-ans-btn {
+      width: 100%;
+      padding: 13px 18px;
+      border-radius: 14px;
+      border: none;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.98rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow);
+      transition: background-color 0.15s ease, transform 0.12s ease;
+    }
+
+    .toggle-ans-btn:active {
+      transform: scale(0.98);
+    }
+
+    .toggle-ans-btn.active {
+      background: var(--surface);
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+    }
+
+    /* Solution Section */
+    .solution-panel {
+      display: none;
+      margin-top: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.2s ease;
+    }
+
+    .solution-panel.visible {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .sol-heading {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-item {
+      background: var(--step-bg);
+      border-left: 3.5px solid var(--primary);
+      border-radius: 0 10px 10px 0;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    .step-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .step-body {
+      font-size: 1.02rem;
+      overflow-x: auto;
+      line-height: 1.85;
+    }
+
+    .final-answer {
+      margin-top: 14px;
+      background: var(--ans-bg);
+      border: 1.5px solid var(--ans-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .final-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--ans-text);
+      margin-bottom: 4px;
+    }
+
+    .final-math {
+      font-family: "Cambria Math", "Times New Roman", Georgia, serif;
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: var(--text);
+      overflow-x: auto;
+      line-height: 1.9;
+    }
+
+    /* Fixed Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      z-index: 30;
+    }
+
+    .bottom-nav-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.15s ease, transform 0.12s ease;
+    }
+
+    .nav-btn.primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .nav-btn:not(:disabled):active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Top Bar: Topic Jump + Theme Toggle -->
+    <div class="top-controls">
+      <select id="topicSelect" class="topic-select" aria-label="Select Topic"></select>
+      <button id="themeBtn" class="icon-btn" aria-label="Toggle Dark Mode" title="Toggle Theme">🌙</button>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span id="progressText">Question 1 of 18</span>
+        <span id="topicProgressText">Topic 1 / 6</span>
+      </div>
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill" style="width: 5.5%;"></div>
+      </div>
+    </div>
+
+    <!-- Question Card -->
+    <article class="card">
+      <div class="card-header">
+        <div>
+          <div id="topicLabel" class="topic-label">Topic 1</div>
+          <div id="questionTitle" class="q-number">Problem 1</div>
+        </div>
+        <span id="diffBadge" class="diff-badge diff-Easy">Easy</span>
+      </div>
+
+      <div id="promptText" class="prompt-text">Find the Laplace transform:</div>
+      <div id="problemMath" class="math-box"></div>
+    </article>
+
+    <!-- Show Answer Button -->
+    <button id="showAnsBtn" class="toggle-ans-btn">
+      <span>👁️</span>
+      <span id="showAnsText">Show Answer</span>
+    </button>
+
+    <!-- Step-by-Step Solution -->
+    <section id="solutionPanel" class="solution-panel" aria-live="polite">
+      <div class="sol-heading">📝 Step-by-Step Solution</div>
+      <div id="stepsContainer"></div>
+      <div class="final-answer">
+        <div class="final-label">Final Answer</div>
+        <div id="finalMath" class="final-math"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button id="backBtn" class="nav-btn">← Back</button>
+      <button id="nextBtn" class="nav-btn primary">Next →</button>
+    </div>
+  </nav>
+
+  <script>
+    // Helper to build clean HTML fractions
+    function frac(num, den) {
+      return `<span class="frac"><span class="num">${num}</span><span class="den">${den}</span></span>`;
+    }
+
+    const L = `<span class="op-laplace">L</span>`;
+    const Linv = `<span class="op-laplace">L</span><sup>&minus;1</sup>`;
+
+    // ========================================================
+    // Structured Problems: Ordered by Topic, then Easy -> Hard
+    // ========================================================
+    const PROBLEMS = [
+      // ---------------- TOPIC 1 ----------------
+      {
+        topicId: 1,
+        topic: "1. Basic Laplace Transforms & Linearity",
+        difficulty: "Easy",
+        prompt: "Find the Laplace transform of the following function:",
+        question: `${L}{ 3t<sup>4</sup> &minus; 5e<sup>&minus;2t</sup> + 7 }`,
+        steps: [
+          {
+            title: "Step 1: Apply Linearity",
+            body: `Split into individual standard transforms:<br><span class="math-inline">3${L}{t<sup>4</sup>} &minus; 5${L}{e<sup>&minus;2t</sup>} + 7${L}{1}</span>`
+          },
+          {
+            title: "Step 2: Use Basic Table Formulas",
+            body: `Recall <span class="math-inline">${L}{t<sup>n</sup>} = ${frac("n!", "s<sup>n+1</sup>")}</span>, <span class="math-inline">${L}{e<sup>at</sup>} = ${frac("1", "s &minus; a")}</span>, and <span class="math-inline">${L}{1} = ${frac("1", "s")}</span>:<br><span class="math-inline">= 3 &middot; ${frac("4!", "s<sup>5</sup>")} &minus; 5 &middot; ${frac("1", "s + 2")} + 7 &middot; ${frac("1", "s")}</span>`
+          },
+          {
+            title: "Step 3: Simplify Constants",
+            body: `Since <span class="math-inline">4! = 24</span>, multiply <span class="math-inline">3 &times; 24 = 72</span>.`
+          }
+        ],
+        answer: `${frac("72", "s<sup>5</sup>")} &minus; ${frac("5", "s + 2")} + ${frac("7", "s")}`
+      },
+      {
+        topicId: 1,
+        topic: "1. Basic Laplace Transforms & Linearity",
+        difficulty: "Medium",
+        prompt: "Find the Laplace transform using trigonometric identities:",
+        question: `${L}{ sin(3t) cos(3t) + cosh(4t) }`,
+        steps: [
+          {
+            title: "Step 1: Apply Double-Angle Identity",
+            body: `Use <span class="math-inline">sin(A)cos(A) = ${frac("1", "2")}sin(2A)</span>:<br><span class="math-inline">sin(3t)cos(3t) = ${frac("1", "2")}sin(6t)</span>`
+          },
+          {
+            title: "Step 2: Apply Standard Transforms",
+            body: `Recall <span class="math-inline">${L}{sin(at)} = ${frac("a", "s<sup>2</sup> + a<sup>2</sup>")}</span> and <span class="math-inline">${L}{cosh(at)} = ${frac("s", "s<sup>2</sup> &minus; a<sup>2</sup>")}</span>:<br><span class="math-inline">= ${frac("1", "2")} &middot; ${frac("6", "s<sup>2</sup> + 36")} + ${frac("s", "s<sup>2</sup> &minus; 16")}</span>`
+          }
+        ],
+        answer: `${frac("3", "s<sup>2</sup> + 36")} + ${frac("s", "s<sup>2</sup> &minus; 16")}`
+      },
+      {
+        topicId: 1,
+        topic: "1. Basic Laplace Transforms & Linearity",
+        difficulty: "Hard",
+        prompt: "Expand the expression and find its Laplace transform:",
+        question: `${L}{ (t + 2e<sup>3t</sup>)<sup>2</sup> }`,
+        steps: [
+          {
+            title: "Step 1: Expand the Square",
+            body: `<span class="math-inline">(t + 2e<sup>3t</sup>)<sup>2</sup> = t<sup>2</sup> + 4t e<sup>3t</sup> + 4e<sup>6t</sup></span>`
+          },
+          {
+            title: "Step 2: Transform Each Term Separately",
+            body: `&bull; <span class="math-inline">${L}{t<sup>2</sup>} = ${frac("2!", "s<sup>3</sup>")} = ${frac("2", "s<sup>3</sup>")}</span><br>&bull; <span class="math-inline">${L}{4t e<sup>3t</sup>} = 4 &middot; ${frac("1!", "(s &minus; 3)<sup>2</sup>")} = ${frac("4", "(s &minus; 3)<sup>2</sup>")}</span><br>&bull; <span class="math-inline">${L}{4e<sup>6t</sup>} = ${frac("4", "s &minus; 6")}</span>`
+          }
+        ],
+        answer: `${frac("2", "s<sup>3</sup>")} + ${frac("4", "(s &minus; 3)<sup>2</sup>")} + ${frac("4", "s &minus; 6")}`
+      },
+
+      // ---------------- TOPIC 2 ----------------
+      {
+        topicId: 2,
+        topic: "2. First Shifting Theorem (s-Shifting)",
+        difficulty: "Easy",
+        prompt: "Use the First Shifting Theorem to evaluate:",
+        question: `${L}{ e<sup>3t</sup> t<sup>4</sup> }`,
+        steps: [
+          {
+            title: "Step 1: Recall First Shifting Theorem",
+            body: `If <span class="math-inline">${L}{f(t)} = F(s)</span>, then <span class="math-inline">${L}{e<sup>at</sup> f(t)} = F(s &minus; a)</span>.`
+          },
+          {
+            title: "Step 2: Find F(s) and Shift",
+            body: `Here <span class="math-inline">f(t) = t<sup>4</sup> &rArr; F(s) = ${frac("24", "s<sup>5</sup>")}</span>.<br>Replace <span class="math-inline">s</span> with <span class="math-inline">(s &minus; 3)</span>.`
+          }
+        ],
+        answer: `${frac("24", "(s &minus; 3)<sup>5</sup>")}`
+      },
+      {
+        topicId: 2,
+        topic: "2. First Shifting Theorem (s-Shifting)",
+        difficulty: "Medium",
+        prompt: "Find the Laplace transform:",
+        question: `${L}{ e<sup>&minus;2t</sup> cos(5t) }`,
+        steps: [
+          {
+            title: "Step 1: Transform the Base Function",
+            body: `<span class="math-inline">F(s) = ${L}{cos(5t)} = ${frac("s", "s<sup>2</sup> + 25")}</span>`
+          },
+          {
+            title: "Step 2: Shift s &rarr; s + 2",
+            body: `Since <span class="math-inline">a = &minus;2</span>, substitute <span class="math-inline">s &minus; (&minus;2) = s + 2</span> into every <span class="math-inline">s</span>:<br><span class="math-inline">F(s + 2) = ${frac("s + 2", "(s + 2)<sup>2</sup> + 25")}</span>`
+          },
+          {
+            title: "Step 3: Expand the Denominator",
+            body: `<span class="math-inline">(s + 2)<sup>2</sup> + 25 = s<sup>2</sup> + 4s + 4 + 25 = s<sup>2</sup> + 4s + 29</span>`
+          }
+        ],
+        answer: `${frac("s + 2", "s<sup>2</sup> + 4s + 29")}`
+      },
+      {
+        topicId: 2,
+        topic: "2. First Shifting Theorem (s-Shifting)",
+        difficulty: "Hard",
+        prompt: "Find the Laplace transform and simplify:",
+        question: `${L}{ e<sup>t</sup> (3sin(2t) &minus; 4cos(2t)) }`,
+        steps: [
+          {
+            title: "Step 1: Find F(s) for the Bracket",
+            body: `<span class="math-inline">F(s) = 3 &middot; ${frac("2", "s<sup>2</sup> + 4")} &minus; 4 &middot; ${frac("s", "s<sup>2</sup> + 4")} = ${frac("6 &minus; 4s", "s<sup>2</sup> + 4")}</span>`
+          },
+          {
+            title: "Step 2: Apply Shift s &rarr; s &minus; 1",
+            body: `<span class="math-inline">F(s &minus; 1) = ${frac("6 &minus; 4(s &minus; 1)", "(s &minus; 1)<sup>2</sup> + 4")}</span>`
+          },
+          {
+            title: "Step 3: Simplify Numerator & Denominator",
+            body: `Numerator: <span class="math-inline">6 &minus; 4s + 4 = 10 &minus; 4s</span><br>Denominator: <span class="math-inline">(s<sup>2</sup> &minus; 2s + 1) + 4 = s<sup>2</sup> &minus; 2s + 5</span>`
+          }
+        ],
+        answer: `${frac("10 &minus; 4s", "s<sup>2</sup> &minus; 2s + 5")}`
+      },
+
+      // ---------------- TOPIC 3 ----------------
+      {
+        topicId: 3,
+        topic: "3. Multiplication by tⁿ & Division by t",
+        difficulty: "Easy",
+        prompt: "Use the s-differentiation property to evaluate:",
+        question: `${L}{ t sin(2t) }`,
+        steps: [
+          {
+            title: "Step 1: Recall Multiplication by t Property",
+            body: `<span class="math-inline">${L}{t f(t)} = &minus;${frac("d", "ds")} F(s)</span>`
+          },
+          {
+            title: "Step 2: Differentiate F(s) = 2 / (s² + 4)",
+            body: `<span class="math-inline">&minus;${frac("d", "ds")} [ 2(s<sup>2</sup> + 4)<sup>&minus;1</sup> ] = &minus;2(&minus;1)(s<sup>2</sup> + 4)<sup>&minus;2</sup>(2s)</span>`
+          }
+        ],
+        answer: `${frac("4s", "(s<sup>2</sup> + 4)<sup>2</sup>")}`
+      },
+      {
+        topicId: 3,
+        topic: "3. Multiplication by tⁿ & Division by t",
+        difficulty: "Medium",
+        prompt: "Combine First Shifting and s-differentiation:",
+        question: `${L}{ t e<sup>&minus;t</sup> sin(3t) }`,
+        steps: [
+          {
+            title: "Step 1: Find G(s) = L{ e⁻ᵗ sin(3t) }",
+            body: `<span class="math-inline">G(s) = ${frac("3", "(s + 1)<sup>2</sup> + 9")}</span>`
+          },
+          {
+            title: "Step 2: Apply −d/ds to G(s)",
+            body: `<span class="math-inline">${L}{t &middot; e<sup>&minus;t</sup>sin(3t)} = &minus;${frac("d", "ds")} [ 3((s + 1)<sup>2</sup> + 9)<sup>&minus;1</sup> ]</span><br><span class="math-inline">= 3((s + 1)<sup>2</sup> + 9)<sup>&minus;2</sup> &middot; 2(s + 1)</span>`
+          }
+        ],
+        answer: `${frac("6(s + 1)", "((s + 1)<sup>2</sup> + 9)<sup>2</sup>")}`
+      },
+      {
+        topicId: 3,
+        topic: "3. Multiplication by tⁿ & Division by t",
+        difficulty: "Hard",
+        prompt: "Use the division-by-t property (integration in s-domain):",
+        question: `${L}{ ${frac("1 &minus; e<sup>&minus;2t</sup>", "t")} }`,
+        steps: [
+          {
+            title: "Step 1: Recall Division by t Property",
+            body: `<span class="math-inline">${L}{ ${frac("f(t)", "t")} } = &int;<sub>s</sub><sup>&infin;</sup> F(u) du</span>, where <span class="math-inline">F(s) = ${L}{1 &minus; e<sup>&minus;2t</sup>} = ${frac("1", "s")} &minus; ${frac("1", "s + 2")}</span>`
+          },
+          {
+            title: "Step 2: Integrate from s to &infin;",
+            body: `<span class="math-inline">&int;<sub>s</sub><sup>&infin;</sup> (${frac("1", "u")} &minus; ${frac("1", "u + 2")}) du = [ ln(${frac("u", "u + 2")}) ]<sub>s</sub><sup>&infin;</sup></span>`
+          },
+          {
+            title: "Step 3: Evaluate Limits",
+            body: `As <span class="math-inline">u &rarr; &infin;</span>, <span class="math-inline">ln(${frac("u", "u + 2")}) &rarr; ln(1) = 0</span>.<br><span class="math-inline">= 0 &minus; ln(${frac("s", "s + 2")}) = ln(${frac("s + 2", "s")})</span>`
+          }
+        ],
+        answer: `ln(${frac("s + 2", "s")})`
+      },
+
+      // ---------------- TOPIC 4 ----------------
+      {
+        topicId: 4,
+        topic: "4. Second Shifting Theorem (Unit Step)",
+        difficulty: "Easy",
+        prompt: "Find the Laplace transform using the Unit Step function u(t − a):",
+        question: `${L}{ (t &minus; 2)<sup>3</sup> u(t &minus; 2) }`,
+        steps: [
+          {
+            title: "Step 1: Recall Second Shifting Theorem",
+            body: `<span class="math-inline">${L}{ f(t &minus; a) u(t &minus; a) } = e<sup>&minus;as</sup> F(s)</span>`
+          },
+          {
+            title: "Step 2: Identify a and f(t)",
+            body: `Here <span class="math-inline">a = 2</span> and <span class="math-inline">f(t) = t<sup>3</sup> &rArr; F(s) = ${frac("3!", "s<sup>4</sup>")} = ${frac("6", "s<sup>4</sup>")}</span>.`
+          }
+        ],
+        answer: `${frac("6e<sup>&minus;2s</sup>", "s<sup>4</sup>")}`
+      },
+      {
+        topicId: 4,
+        topic: "4. Second Shifting Theorem (Unit Step)",
+        difficulty: "Medium",
+        prompt: "Evaluate the Laplace transform:",
+        question: `${L}{ sin(4(t &minus; 2)) u(t &minus; 2) }`,
+        steps: [
+          {
+            title: "Step 1: Match Standard Form f(t − 2)u(t − 2)",
+            body: `With <span class="math-inline">a = 2</span>, the unshifted function is <span class="math-inline">f(t) = sin(4t)</span>.`
+          },
+          {
+            title: "Step 2: Transform f(t) and Multiply by e⁻²ˢ",
+            body: `<span class="math-inline">F(s) = ${L}{sin(4t)} = ${frac("4", "s<sup>2</sup> + 16")}</span><br>Multiply by <span class="math-inline">e<sup>&minus;2s</sup></span>.`
+          }
+        ],
+        answer: `${frac("4e<sup>&minus;2s</sup>", "s<sup>2</sup> + 16")}`
+      },
+      {
+        topicId: 4,
+        topic: "4. Second Shifting Theorem (Unit Step)",
+        difficulty: "Hard",
+        prompt: "Rewrite the polynomial in powers of (t − 1) first, then transform:",
+        question: `${L}{ t<sup>2</sup> u(t &minus; 1) }`,
+        steps: [
+          {
+            title: "Step 1: Express t² in terms of (t − 1)",
+            body: `Write <span class="math-inline">t = (t &minus; 1) + 1</span>:<br><span class="math-inline">t<sup>2</sup> = ((t &minus; 1) + 1)<sup>2</sup> = (t &minus; 1)<sup>2</sup> + 2(t &minus; 1) + 1</span>`
+          },
+          {
+            title: "Step 2: Identify f(t) and Find F(s)",
+            body: `Thus <span class="math-inline">f(t) = t<sup>2</sup> + 2t + 1</span>:<br><span class="math-inline">F(s) = ${frac("2", "s<sup>3</sup>")} + ${frac("2", "s<sup>2</sup>")} + ${frac("1", "s")}</span>`
+          },
+          {
+            title: "Step 3: Multiply by e⁻ˢ (since a = 1)",
+            body: `Apply <span class="math-inline">${L}{f(t &minus; 1)u(t &minus; 1)} = e<sup>&minus;s</sup>F(s)</span>.`
+          }
+        ],
+        answer: `e<sup>&minus;s</sup> ( ${frac("2", "s<sup>3</sup>")} + ${frac("2", "s<sup>2</sup>")} + ${frac("1", "s")} )`
+      },
+
+      // ---------------- TOPIC 5 ----------------
+      {
+        topicId: 5,
+        topic: "5. Inverse Laplace Transforms",
+        difficulty: "Easy",
+        prompt: "Find the Inverse Laplace transform:",
+        question: `${Linv}{ ${frac("4", "s &minus; 3")} + ${frac("6", "s<sup>4</sup>")} &minus; ${frac("5", "s<sup>2</sup> + 9")} }`,
+        steps: [
+          {
+            title: "Step 1: Adjust Constants to Match Standard Forms",
+            body: `&bull; <span class="math-inline">${Linv}{${frac("4", "s &minus; 3")}} = 4e<sup>3t</sup></span><br>&bull; <span class="math-inline">${Linv}{${frac("3!", "s<sup>3+1</sup>")}} = t<sup>3</sup></span><br>&bull; <span class="math-inline">${Linv}{${frac("5", "s<sup>2</sup> + 3<sup>2</sup>")}} = ${frac("5", "3")}${Linv}{${frac("3", "s<sup>2</sup> + 3<sup>2</sup>")}} = ${frac("5", "3")}sin(3t)</span>`
+          }
+        ],
+        answer: `4e<sup>3t</sup> + t<sup>3</sup> &minus; ${frac("5", "3")}sin(3t)`
+      },
+      {
+        topicId: 5,
+        topic: "5. Inverse Laplace Transforms",
+        difficulty: "Medium",
+        prompt: "Complete the square in the denominator to find the inverse transform:",
+        question: `${Linv}{ ${frac("2s + 5", "s<sup>2</sup> + 4s + 13")} }`,
+        steps: [
+          {
+            title: "Step 1: Complete the Square",
+            body: `<span class="math-inline">s<sup>2</sup> + 4s + 13 = (s + 2)<sup>2</sup> + 9 = (s + 2)<sup>2</sup> + 3<sup>2</sup></span>`
+          },
+          {
+            title: "Step 2: Express Numerator in Terms of (s + 2)",
+            body: `<span class="math-inline">2s + 5 = 2(s + 2) + 1</span><br>Split the fraction:<br><span class="math-inline">2 &middot; ${frac("s + 2", "(s + 2)<sup>2</sup> + 3<sup>2</sup>")} + ${frac("1", "3")} &middot; ${frac("3", "(s + 2)<sup>2</sup> + 3<sup>2</sup>")}</span>`
+          },
+          {
+            title: "Step 3: Apply Inverse First Shifting (s + 2 &rarr; e⁻²ᵗ)",
+            body: `Factor out <span class="math-inline">e<sup>&minus;2t</sup></span> and take inverse sine/cosine.`
+          }
+        ],
+        answer: `e<sup>&minus;2t</sup> ( 2cos(3t) + ${frac("1", "3")}sin(3t) )`
+      },
+      {
+        topicId: 5,
+        topic: "5. Inverse Laplace Transforms",
+        difficulty: "Hard",
+        prompt: "Use Partial Fractions to find the Inverse Laplace transform:",
+        question: `${Linv}{ ${frac("5s<sup>2</sup> + 3s + 2", "s(s<sup>2</sup> + 2s + 2)")} }`,
+        steps: [
+          {
+            title: "Step 1: Set Up Partial Fractions",
+            body: `<span class="math-inline">${frac("5s<sup>2</sup> + 3s + 2", "s(s<sup>2</sup> + 2s + 2)")} = ${frac("A", "s")} + ${frac("Bs + C", "s<sup>2</sup> + 2s + 2")}</span><br><span class="math-inline">5s<sup>2</sup> + 3s + 2 = A(s<sup>2</sup> + 2s + 2) + (Bs + C)s</span>`
+          },
+          {
+            title: "Step 2: Solve for A, B, and C",
+            body: `&bull; Constant term: <span class="math-inline">2A = 2 &rArr; A = 1</span><br>&bull; <span class="math-inline">s<sup>2</sup></span> term: <span class="math-inline">A + B = 5 &rArr; B = 4</span><br>&bull; <span class="math-inline">s</span> term: <span class="math-inline">2A + C = 3 &rArr; C = 1</span>`
+          },
+          {
+            title: "Step 3: Complete Square & Invert",
+            body: `<span class="math-inline">${frac("1", "s")} + ${frac("4s + 1", "(s + 1)<sup>2</sup> + 1")} = ${frac("1", "s")} + 4${frac("s + 1", "(s + 1)<sup>2</sup> + 1")} &minus; 3${frac("1", "(s + 1)<sup>2</sup> + 1")}</span>`
+          }
+        ],
+        answer: `1 + e<sup>&minus;t</sup>(4cos(t) &minus; 3sin(t))`
+      },
+
+      // ---------------- TOPIC 6 ----------------
+      {
+        topicId: 6,
+        topic: "6. Solving Initial Value Problems (IVPs)",
+        difficulty: "Easy",
+        prompt: "Solve the first-order IVP using Laplace transforms:",
+        question: `y' + 3y = e<sup>&minus;2t</sup>, &nbsp;&nbsp; y(0) = 2`,
+        steps: [
+          {
+            title: "Step 1: Take Laplace Transform of Both Sides",
+            body: `<span class="math-inline">[sY(s) &minus; y(0)] + 3Y(s) = ${frac("1", "s + 2")}</span><br>Substitute <span class="math-inline">y(0) = 2</span>:<br><span class="math-inline">(s + 3)Y(s) = 2 + ${frac("1", "s + 2")} = ${frac("2s + 5", "s + 2")}</span>`
+          },
+          {
+            title: "Step 2: Solve for Y(s) & Partial Fractions",
+            body: `<span class="math-inline">Y(s) = ${frac("2s + 5", "(s + 2)(s + 3)")} = ${frac("1", "s + 2")} + ${frac("1", "s + 3")}</span>`
+          },
+          {
+            title: "Step 3: Take Inverse Laplace",
+            body: `<span class="math-inline">y(t) = ${Linv}{Y(s)}</span>`
+          }
+        ],
+        answer: `y(t) = e<sup>&minus;2t</sup> + e<sup>&minus;3t</sup>`
+      },
+      {
+        topicId: 6,
+        topic: "6. Solving Initial Value Problems (IVPs)",
+        difficulty: "Medium",
+        prompt: "Solve the second-order IVP using Laplace transforms:",
+        question: `y'' + 4y = 8, &nbsp;&nbsp; y(0) = 1, &nbsp; y'(0) = 0`,
+        steps: [
+          {
+            title: "Step 1: Transform the ODE",
+            body: `<span class="math-inline">[s<sup>2</sup>Y(s) &minus; s y(0) &minus; y'(0)] + 4Y(s) = ${frac("8", "s")}</span><br><span class="math-inline">(s<sup>2</sup> + 4)Y(s) &minus; s = ${frac("8", "s")} &rArr; Y(s) = ${frac("s", "s<sup>2</sup> + 4")} + ${frac("8", "s(s<sup>2</sup> + 4)")}</span>`
+          },
+          {
+            title: "Step 2: Partial Fractions on Second Term",
+            body: `<span class="math-inline">${frac("8", "s(s<sup>2</sup> + 4)")} = ${frac("2", "s")} &minus; ${frac("2s", "s<sup>2</sup> + 4")}</span>`
+          },
+          {
+            title: "Step 3: Combine and Invert",
+            body: `<span class="math-inline">Y(s) = ${frac("2", "s")} &minus; ${frac("s", "s<sup>2</sup> + 4")}</span>`
+          }
+        ],
+        answer: `y(t) = 2 &minus; cos(2t)`
+      },
+      {
+        topicId: 6,
+        topic: "6. Solving Initial Value Problems (IVPs)",
+        difficulty: "Hard",
+        prompt: "Solve the damped forced oscillation IVP:",
+        question: `y'' + 2y' + 5y = e<sup>&minus;t</sup>sin(2t), &nbsp;&nbsp; y(0) = 0, &nbsp; y'(0) = 1`,
+        steps: [
+          {
+            title: "Step 1: Transform Both Sides",
+            body: `<span class="math-inline">(s<sup>2</sup> + 2s + 5)Y(s) &minus; 1 = ${frac("2", "(s + 1)<sup>2</sup> + 4")}</span><br>Notice <span class="math-inline">s<sup>2</sup> + 2s + 5 = (s + 1)<sup>2</sup> + 4</span>:<br><span class="math-inline">Y(s) = ${frac("1", "(s + 1)<sup>2</sup> + 4")} + ${frac("2", "((s + 1)<sup>2</sup> + 4)<sup>2</sup>")}</span>`
+          },
+          {
+            title: "Step 2: Invert Each Term (with Shift s &rarr; s + 1)",
+            body: `&bull; <span class="math-inline">${Linv}{${frac("1", "(s + 1)<sup>2</sup> + 4")}} = ${frac("1", "2")}e<sup>&minus;t</sup>sin(2t)</span><br>&bull; Using <span class="math-inline">${Linv}{${frac("2a<sup>3</sup>", "(s<sup>2</sup> + a<sup>2</sup>)<sup>2</sup>")}} = sin(at) &minus; at cos(at)</span> with <span class="math-inline">a = 2</span>:<br><span class="math-inline">${Linv}{${frac("2", "((s + 1)<sup>2</sup> + 4)<sup>2</sup>")}} = ${frac("1", "8")}e<sup>&minus;t</sup>(sin(2t) &minus; 2t cos(2t))</span>`
+          },
+          {
+            title: "Step 3: Combine Like Terms",
+            body: `<span class="math-inline">(${frac("1", "2")} + ${frac("1", "8")})e<sup>&minus;t</sup>sin(2t) &minus; ${frac("2", "8")}t e<sup>&minus;t</sup>cos(2t)</span>`
+          }
+        ],
+        answer: `y(t) = ${frac("5", "8")}e<sup>&minus;t</sup>sin(2t) &minus; ${frac("1", "4")}t e<sup>&minus;t</sup>cos(2t)`
+      }
+    ];
+
+    // State
+    let currentIndex = 0;
+    let answerVisible = false;
+
+    // DOM Elements
+    const el = {
+      topicSelect: document.getElementById("topicSelect"),
+      themeBtn: document.getElementById("themeBtn"),
+      progressText: document.getElementById("progressText"),
+      topicProgressText: document.getElementById("topicProgressText"),
+      progressFill: document.getElementById("progressFill"),
+      topicLabel: document.getElementById("topicLabel"),
+      questionTitle: document.getElementById("questionTitle"),
+      diffBadge: document.getElementById("diffBadge"),
+      promptText: document.getElementById("promptText"),
+      problemMath: document.getElementById("problemMath"),
+      showAnsBtn: document.getElementById("showAnsBtn"),
+      showAnsText: document.getElementById("showAnsText"),
+      solutionPanel: document.getElementById("solutionPanel"),
+      stepsContainer: document.getElementById("stepsContainer"),
+      finalMath: document.getElementById("finalMath"),
+      backBtn: document.getElementById("backBtn"),
+      nextBtn: document.getElementById("nextBtn")
+    };
+
+    // Theme Handling
+    function initTheme() {
+      const saved = localStorage.getItem("laplace_theme");
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      applyTheme(saved || (prefersDark ? "dark" : "light"));
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      el.themeBtn.textContent = theme === "dark" ? "☀️" : "🌙";
+      localStorage.setItem("laplace_theme", theme);
+    }
+
+    el.themeBtn.addEventListener("click", () => {
+      const curr = document.documentElement.getAttribute("data-theme");
+      applyTheme(curr === "dark" ? "light" : "dark");
+    });
+
+    // Populate Topic Dropdown
+    function initTopicDropdown() {
+      const seenTopics = new Map();
+      PROBLEMS.forEach((p, idx) => {
+        if (!seenTopics.has(p.topicId)) {
+          seenTopics.set(p.topicId, { title: p.topic, firstIndex: idx });
+        }
+      });
+
+      seenTopics.forEach((val, topicId) => {
+        const opt = document.createElement("option");
+        opt.value = val.firstIndex;
+        opt.textContent = val.title;
+        el.topicSelect.appendChild(opt);
+      });
+
+      el.topicSelect.addEventListener("change", (e) => {
+        currentIndex = parseInt(e.target.value, 10);
+        answerVisible = false;
+        renderProblem();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+
+    // Render Current Problem
+    function renderProblem() {
+      const p = PROBLEMS[currentIndex];
+      const total = PROBLEMS.length;
+
+      // Update progress
+      el.progressText.textContent = `Question ${currentIndex + 1} of ${total}`;
+      el.topicProgressText.textContent = `Topic ${p.topicId} / 6`;
+      el.progressFill.style.width = `${((currentIndex + 1) / total) * 100}%`;
+
+      // Sync dropdown to current topic's first index
+      const firstIdxOfTopic = PROBLEMS.findIndex(item => item.topicId === p.topicId);
+      el.topicSelect.value = String(firstIdxOfTopic);
+
+      // Update Card Header & Question
+      el.topicLabel.textContent = p.topic;
+      el.questionTitle.textContent = `Problem ${currentIndex + 1}`;
+      el.diffBadge.textContent = p.difficulty;
+      el.diffBadge.className = `diff-badge diff-${p.difficulty}`;
+      el.promptText.textContent = p.prompt;
+      el.problemMath.innerHTML = p.question;
+
+      // Update Steps & Final Answer
+      el.stepsContainer.innerHTML = p.steps
+        .map(
+          s => `
+          <div class="step-item">
+            <div class="step-title">${s.title}</div>
+            <div class="step-body">${s.body}</div>
+          </div>
+        `
+        )
+        .join("");
+      el.finalMath.innerHTML = p.answer;
+
+      // Update Answer Toggle State
+      if (answerVisible) {
+        el.solutionPanel.classList.add("visible");
+        el.showAnsBtn.classList.add("active");
+        el.showAnsText.textContent = "Hide Answer";
+      } else {
+        el.solutionPanel.classList.remove("visible");
+        el.showAnsBtn.classList.remove("active");
+        el.showAnsText.textContent = "Show Answer";
+      }
+
+      // Update Navigation Buttons
+      el.backBtn.disabled = currentIndex === 0;
+      el.nextBtn.disabled = currentIndex === total - 1;
+      el.nextBtn.textContent = currentIndex === total - 1 ? "Completed ✓" : "Next →";
+    }
+
+    // Button Events
+    el.showAnsBtn.addEventListener("click", () => {
+      answerVisible = !answerVisible;
+      renderProblem();
+      if (answerVisible) {
+        el.solutionPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    });
+
+    el.backBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        answerVisible = false;
+        renderProblem();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+
+    el.nextBtn.addEventListener("click", () => {
+      if (currentIndex < PROBLEMS.length - 1) {
+        currentIndex++;
+        answerVisible = false;
+        renderProblem();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+
+    // Keyboard navigation support
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" && currentIndex < PROBLEMS.length - 1) {
+        currentIndex++;
+        answerVisible = false;
+        renderProblem();
+      } else if (e.key === "ArrowLeft" && currentIndex > 0) {
+        currentIndex--;
+        answerVisible = false;
+        renderProblem();
+      }
+    });
+
+    // Initialize
+    initTheme();
+    initTopicDropdown();
+    renderProblem();
+  </script>
+</body>
+</html>
